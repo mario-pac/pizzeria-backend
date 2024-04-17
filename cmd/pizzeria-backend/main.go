@@ -5,9 +5,9 @@ import (
 
 	_ "github.com/dgrijalva/jwt-go"
 	_ "github.com/godror/godror"
-	"github.com/mario-pac/apiCNPJa/config"
-	"github.com/mario-pac/apiCNPJa/database"
-	"github.com/mario-pac/apiCNPJa/services"
+	"github.com/mario-pac/pizzeria-backend/config"
+	"github.com/mario-pac/pizzeria-backend/database"
+	"github.com/mario-pac/pizzeria-backend/services"
 )
 
 func main() {

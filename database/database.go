@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/mario-pac/apiCNPJa/config"
+	"github.com/mario-pac/pizzeria-backend/config"
 )
 
 // DAO - struct que representa a conexão com o banco de dados postgres

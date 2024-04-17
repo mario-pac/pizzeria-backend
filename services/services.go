@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/mario-pac/apiCNPJa/config"
-	"github.com/mario-pac/apiCNPJa/database"
+	"github.com/mario-pac/pizzeria-backend/config"
+	"github.com/mario-pac/pizzeria-backend/database"
 
 	"github.com/gorilla/mux"
 )

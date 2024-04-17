@@ -1,3 +1,3 @@
-module pizzeria-backend
+module go/pizzeria-backend
 
 go 1.22.2

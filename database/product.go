@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/mario-pac/apiCNPJa/models"
+	"github.com/mario-pac/pizzeria-backend/models"
 )
 
 func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product, error) {

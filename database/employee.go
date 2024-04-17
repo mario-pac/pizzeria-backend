@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/mario-pac/apiCNPJa/models"
+	"github.com/mario-pac/pizzeria-backend/models"
 )
 
 func (d *DAO) ListEmployees(filters *models.EmployeeListFilters) ([]*models.Employee, error) {
