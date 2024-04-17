@@ -3,11 +3,12 @@ package main
 import (
 	"log"
 
+	"go/pizzeria-backend/config"
+	"go/pizzeria-backend/database"
+	"go/pizzeria-backend/services"
+
 	_ "github.com/dgrijalva/jwt-go"
-	_ "github.com/godror/godror"
-	"github.com/mario-pac/pizzeria-backend/config"
-	"github.com/mario-pac/pizzeria-backend/database"
-	"github.com/mario-pac/pizzeria-backend/services"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -26,7 +27,7 @@ func main() {
 	defer dao.Close()
 
 	log.Println("Successful connection with database!")
-	log.Println("Web-service Alpha-CNPJ-Treinamento - v1.1")
+	log.Println("API App Pizzaria v0.1")
 
 	service := services.New(cfg, dao)
 	service.Listen()

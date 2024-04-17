@@ -1,8 +1,9 @@
 package database
 
 import (
+	"go/pizzeria-backend/config"
+
 	"github.com/jmoiron/sqlx"
-	"github.com/mario-pac/pizzeria-backend/config"
 )
 
 // DAO - struct que representa a conexão com o banco de dados postgres

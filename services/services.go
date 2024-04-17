@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/mario-pac/pizzeria-backend/config"
-	"github.com/mario-pac/pizzeria-backend/database"
+	"go/pizzeria-backend/config"
+	"go/pizzeria-backend/database"
 
 	"github.com/gorilla/mux"
 )
@@ -37,5 +37,5 @@ func (s *Service) Listen() {
 	// router.HandleFunc("/me", s.authAPI(s.MeHandler)).Methods("GET")                                                 //define a rota '/me'
 	// router.HandleFunc("/me/requests/from={startDate}&until={endDate}", s.authAPI(s.RequestsHandler)).Methods("GET") //define a rota para o histórico de requests
 
-	log.Fatal(http.ListenAndServe(":8000", router)) //prepara o serviço na porta e rota especificadas
+	log.Fatal(http.ListenAndServe(":8080", router)) //prepara o serviço na porta e rota especificadas
 }

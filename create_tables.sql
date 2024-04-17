@@ -6,7 +6,7 @@ CREATE TABLE
 
 CREATE TABLE
     employees (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         username VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE
 
 CREATE TABLE
     products (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
         description TEXT NOT NULL,
         price DECIMAL(10, 2) NOT NULL,
         category VARCHAR(255) NOT NULL,
@@ -35,8 +35,8 @@ CREATE TABLE
 
 CREATE TABLE
     orders (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-        employee_id SERIAL REFERENCES employees(id),
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        employee_id INTEGER REFERENCES employees(id),
         table_number INTEGER NOT NULL,
         customer_name VARCHAR(255) NOT NULL,
         total_value DECIMAL(10, 2) NOT NULL,
@@ -61,9 +61,9 @@ CREATE TABLE
 
 CREATE TABLE
     order_items (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-        order_id SERIAL REFERENCES orders(id),
-        product_id SERIAL REFERENCES products(id),
+        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        order_id INTEGER REFERENCES orders(id),
+        product_id INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL,
         id_order_status SMALLINT DEFAULT 1 REFERENCES status(id),
         created_at TIMESTAMP

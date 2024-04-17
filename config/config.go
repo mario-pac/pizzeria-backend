@@ -22,7 +22,7 @@ type DBConfig struct {
 
 // Config - struct para guardar configurações do aplicativo
 type Config struct {
-	DBConfig           *DBConfig
+	DBConfig *DBConfig
 }
 
 func New() (*Config, error) {
@@ -42,7 +42,7 @@ func New() (*Config, error) {
 }
 
 func (d *DBConfig) ConnectDB() (*sqlx.DB, error) {
-	db, err := sqlx.Open("godror", fmt.Sprintf("%s/%s@%s:%s/%s", d.DbUser, d.DbPass, d.DbHost, d.DbPort, d.DbSid))
+	db, err := sqlx.Open("postgres", fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable", d.DbUser, d.DbPass, d.DbHost, d.DbPort, d.DbSid))
 	if err != nil {
 		return nil, errors.Wrap(err, "erro ao abrir conexão")
 	}
@@ -59,7 +59,7 @@ func (d *DBConfig) ConnectDB() (*sqlx.DB, error) {
 			return strings.ToUpper(s)
 		})
 
-	sqlx.BindDriver("godror", sqlx.NAMED)
+	sqlx.BindDriver("postgres", sqlx.NAMED)
 
 	return db, nil
 }

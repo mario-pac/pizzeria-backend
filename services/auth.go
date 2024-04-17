@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/mario-pac/pizzeria-backend/auth"
+	"go/pizzeria-backend/auth"
 )
 
 func (s *Service) HandleLogin(w http.ResponseWriter, r *http.Request) {
