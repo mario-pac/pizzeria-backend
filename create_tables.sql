@@ -1,12 +1,12 @@
 CREATE TABLE
     employees_levels (
-        id SMALLINT PRIMARY KEY,
-        description VARCHAR(20)
+        id SMALLINT PRIMARY KEY NOT NULL,
+        description VARCHAR(20) NOT NULL
     );
 
 CREATE TABLE
     employees (
-        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         username VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE
 
 CREATE TABLE
     products (
-        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
+        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
         description TEXT NOT NULL,
         price DECIMAL(10, 2) NOT NULL,
         category VARCHAR(255) NOT NULL,
@@ -35,13 +35,13 @@ CREATE TABLE
 
 CREATE TABLE
     orders (
-        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-        employee_id INTEGER REFERENCES employees(id),
-        table_number INTEGER NOT NULL,
+        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        employee_id SERIAL REFERENCES employees(id),
+        table_number SERIAL NOT NULL,
         customer_name VARCHAR(255) NOT NULL,
         total_value DECIMAL(10, 2) NOT NULL,
         payment_method VARCHAR(50) NOT NULL,
-        status VARCHAR(50) NOT NULL,
+        id_status VARCHAR(50) NOT NULL,
         note TEXT NULL,
         created_at TIMESTAMP
         WITH
@@ -53,18 +53,17 @@ CREATE TABLE
 
 CREATE TABLE
      status (
-        id SMALLINT PRIMARY KEY,
-        description VARCHAR(24),
-        type VARCHAR(30)
+        id SMALLINT PRIMARY KEY NOT NULL,
+        description VARCHAR(24) NOT NULL,
      );
 
 
 CREATE TABLE
     order_items (
-        id INTEGER PRIMARY KEY NOT NULL UNIQUE,
-        order_id INTEGER REFERENCES orders(id),
-        product_id INTEGER REFERENCES products(id),
-        quantity INTEGER NOT NULL,
+        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        order_id SERIAL REFERENCES orders(id) NOT NULL,
+        product_id SERIAL REFERENCES products(id) NOT NULL,
+        quantity SERIAL NOT NULL,
         id_order_status SMALLINT DEFAULT 1 REFERENCES status(id),
         created_at TIMESTAMP
         WITH
@@ -76,8 +75,8 @@ CREATE TABLE
 
 CREATE TABLE
     settings (
-        id SMALLINT PRIMARY KEY,
-        number_of_tables INTEGER NOT NULL,
+        id SMALLINT PRIMARY KEY NOT NULL,
+        number_of_tables SERIAL NOT NULL,
         company_name VARCHAR(255) NOT NULL
     );
 
@@ -85,9 +84,6 @@ INSERT INTO employees_levels (id, description) VALUES
 (1, 'Chef'),
 (2, 'Waiter'),
 (3, 'Manager');
-
-INSERT INTO employees (id, name, username, password, level_id) VALUES 
-(1, 'Administrador', 'admin', 'Mudar123', 3);
 
 INSERT INTO products (id, description, price, category) VALUES 
 (1, 'Pizza de Margueritta', 12.99, 'Pizza');

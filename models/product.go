@@ -8,6 +8,7 @@ type Product struct {
 	Price       float64   `json:"price" db:"price"`
 	Category    string    `json:"category" db:"category"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
 }
 
 type ProductListFilters struct {

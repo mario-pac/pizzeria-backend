@@ -3,10 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/jmoiron/sqlx/reflectx"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 )
@@ -52,14 +50,6 @@ func (d *DBConfig) ConnectDB() (*sqlx.DB, error) {
 		return nil, errors.Wrap(err, "erro ao pingar no banco")
 
 	}
-
-	db.Mapper = reflectx.NewMapperTagFunc("db",
-		nil,
-		func(s string) string {
-			return strings.ToUpper(s)
-		})
-
-	sqlx.BindDriver("postgres", sqlx.NAMED)
 
 	return db, nil
 }

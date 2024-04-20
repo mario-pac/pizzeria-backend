@@ -3,19 +3,18 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"time"
 
 	"go/pizzeria-backend/models"
 )
 
-func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product, error) {
+func (d *DAO) ListProducts(filters *models.ProductListFilters) ([]*models.Product, error) {
 	var products []*models.Product
 
 	q := "select * from products"
 	var hasW = false
 
-	pars := []interface{}{}
-
-	addW := func(expr string, p ...interface{}) {
+	addW := func(expr string) {
 		if hasW {
 			q += "\n and "
 		} else {
@@ -23,7 +22,6 @@ func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product
 			hasW = true
 		}
 		q += expr
-		pars = append(pars, p...)
 	}
 
 	if filters.Description != nil && *filters.Description != "" {
@@ -34,7 +32,7 @@ func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product
 		addW("category like '%" + *filters.Category + "%'")
 	}
 
-	err := d.db.Select(&products, q, pars)
+	err := d.db.Select(&products, q)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
@@ -43,8 +41,8 @@ func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product
 }
 
 func (d *DAO) InsertProduct(data models.Product) error {
-	q := "insert into products (description, price, category, created_at) values (?, ?, ?, ?)"
-	_, err := d.db.Exec(q, data)
+	q := "insert into products (description, price, category, created_at) values ($1, $2, $3, $4)"
+	_, err := d.db.Exec(q, data.Description, data.Price, data.Category, time.Now())
 	if err != nil {
 		return err
 	}
@@ -52,8 +50,8 @@ func (d *DAO) InsertProduct(data models.Product) error {
 }
 
 func (d *DAO) UpdateProduct(data models.Product) error {
-	q := "update products set description = ?, price = ?, category = ? where id = ?"
-	_, err := d.db.Exec(q, data)
+	q := "update products set description = $1, price = $2, category = $3, updated_at = $4 where id = $5"
+	_, err := d.db.Exec(q, data.Description, data.Price, data.Category, data.UpdatedAt, data.ID)
 	if err != nil {
 		return err
 	}
@@ -61,7 +59,7 @@ func (d *DAO) UpdateProduct(data models.Product) error {
 }
 
 func (d *DAO) DeleteProduct(id int64) error {
-	q := "delete from products where id =?"
+	q := "delete from products where id = $1"
 	_, err := d.db.Exec(q, id)
 	if err != nil {
 		return err
@@ -71,8 +69,8 @@ func (d *DAO) DeleteProduct(id int64) error {
 
 func (d *DAO) ProductById(id int64) (*models.Product, error) {
 	var product *models.Product
-	q := "select * from products where id = ?"
-	err := d.db.Get(&product, d.db.Rebind(q), id)
+	q := "select * from products where id = $1"
+	err := d.db.Get(&product, q, id)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}

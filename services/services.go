@@ -30,12 +30,27 @@ func (s *Service) RouteDefault(w http.ResponseWriter, r *http.Request) {
 
 // Função que monta o serviço da api com as rotas
 func (s *Service) Listen() {
+	usr, err := s.db.EmployeeById(1)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	if usr == nil {
+		err = s.CreateDefaultUser()
+		if err != nil {
+			log.Fatalf("Erro ao criar o user default(admin): %v", err)
+			return
+		}
+	}
+
 	router := mux.NewRouter()
 	router.HandleFunc("/", (s.RouteDefault)).Methods("GET")
 	router.HandleFunc("/login", s.HandleLogin).Methods("GET")
-	// router.HandleFunc("/cnpj/{cnpj}", s.authAPI(s.ConsultaCNPJHandler)).Methods("GET")                              //passa a variável {cnpj}
-	// router.HandleFunc("/me", s.authAPI(s.MeHandler)).Methods("GET")                                                 //define a rota '/me'
-	// router.HandleFunc("/me/requests/from={startDate}&until={endDate}", s.authAPI(s.RequestsHandler)).Methods("GET") //define a rota para o histórico de requests
+	router.HandleFunc("/isTokenValid", s.IsTokenValid).Methods("GET")
+	router.HandleFunc("/logout", s.HandleLogout).Methods("GET")
+	router.HandleFunc("/listEmployees", s.HandleListEmployees).Methods("GET")
+	router.HandleFunc("/addEmployee", s.HandleAddEmployee).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", router)) //prepara o serviço na porta e rota especificadas
 }
