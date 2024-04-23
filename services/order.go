@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (s *Service) HandleListEmployees(w http.ResponseWriter, r *http.Request) {
+func (s *Service) HandleListOrders(w http.ResponseWriter, r *http.Request) {
 	token := s.HandleConfirmToken(w, r)
 
 	if !token {
@@ -16,7 +16,7 @@ func (s *Service) HandleListEmployees(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filters := &models.EmployeeListFilters{}
+	filters := &models.OrdersListFilters{}
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -30,19 +30,19 @@ func (s *Service) HandleListEmployees(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	employees, err := s.db.ListEmployees(filters)
+	orders, err := s.db.ListOrders(filters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	response := map[string][]*models.Employee{"data": employees}
+	response := map[string][]*models.Order{"data": orders}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
-func (s *Service) HandleAddEmployee(w http.ResponseWriter, r *http.Request) {
+func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -55,44 +55,40 @@ func (s *Service) HandleAddEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var employee models.Employee
+	var order models.Order
 
-	err = json.Unmarshal(body, &employee)
+	err = json.Unmarshal(body, &order)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if len(employee.CompleteName) == 0 {
-		http.Error(w, "nome é obrigatório!", http.StatusBadRequest)
+	if len(order.CustomerName) == 0 {
+		http.Error(w, "nome do cliente é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if len(employee.Username) == 0 {
-		http.Error(w, "usuário é obrigatório!", http.StatusBadRequest)
+	if order.EmployeeId == 0 {
+		http.Error(w, "funcionário é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if len(employee.Password) == 0 {
-		http.Error(w, "senha é obrigatório!", http.StatusBadRequest)
-		return
-	}
-	if len(strconv.Itoa(int(employee.Level_Id))) == 0 {
-		http.Error(w, "tipo funcionário é obrigatório!", http.StatusBadRequest)
+	if order.TableNumber == 0 {
+		http.Error(w, "número da mesa é obrigatório!", http.StatusBadRequest)
 		return
 	}
 
-	err = s.db.InsertEmployee(employee)
+	err = s.db.InsertOrder(order)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	response := map[string]string{"message": "Funcionário adicionado com sucesso!"}
+	response := map[string]string{"message": "Pedido adicionado com sucesso!"}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
-func (s *Service) HandleUpdateEmployee(w http.ResponseWriter, r *http.Request) {
+func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -105,81 +101,44 @@ func (s *Service) HandleUpdateEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var employee models.Employee
+	var order models.Order
 
-	err = json.Unmarshal(body, &employee)
+	err = json.Unmarshal(body, &order)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if len(employee.CompleteName) == 0 {
-		http.Error(w, "nome é obrigatório!", http.StatusBadRequest)
+	if len(order.CustomerName) == 0 {
+		http.Error(w, "nome do cliente é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if len(employee.Username) == 0 {
-		http.Error(w, "usuário é obrigatório!", http.StatusBadRequest)
+	if order.EmployeeId == 0 {
+		http.Error(w, "funcionário é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if len(employee.Password) == 0 {
-		http.Error(w, "senha é obrigatório!", http.StatusBadRequest)
+	if order.TableNumber == 0 {
+		http.Error(w, "número da mesa é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if len(strconv.Itoa(int(employee.Level_Id))) == 0 {
-		http.Error(w, "tipo funcionário é obrigatório!", http.StatusBadRequest)
-		return
-	}
-	if len(strconv.Itoa(int(employee.Id))) == 0 {
-		http.Error(w, "o id do usuário é obrigatório!", http.StatusBadRequest)
+	if len(strconv.Itoa(int(order.Id))) == 0 {
+		http.Error(w, "o id do pedido é obrigatório!", http.StatusBadRequest)
 		return
 	}
 
-	err = s.db.UpdateEmployee(employee)
+	err = s.db.UpdateOrder(order)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	response := map[string]string{"message": "Funcionário atualizado com sucesso!"}
+	response := map[string]string{"message": "Pedido atualizado com sucesso!"}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
 
-func (s *Service) HandleRemoveEmployee(w http.ResponseWriter, r *http.Request) {
-	token := s.HandleConfirmToken(w, r)
-	if !token {
-		http.Error(w, "token inválido!", http.StatusUnauthorized)
-		return
-	}
-
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = s.db.DeleteEmployee(mod.Id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	response := map[string]string{"message": "Funcionário removido com sucesso!"}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
-}
-
-func (s *Service) HandleEmployeeByID(w http.ResponseWriter, r *http.Request) {
+func (s *Service) HandleRemoveOrder(w http.ResponseWriter, r *http.Request) {
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -200,13 +159,46 @@ func (s *Service) HandleEmployeeByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	employee, err := s.db.EmployeeById(mod.Id)
+	err = s.db.DeleteOrder(mod.Id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	response := map[string]*models.EmployeeResponse{"data": employee}
+	response := map[string]string{"message": "Pedido removido com sucesso!"}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func (s *Service) HandleOrderByID(w http.ResponseWriter, r *http.Request) {
+	token := s.HandleConfirmToken(w, r)
+	if !token {
+		http.Error(w, "token inválido!", http.StatusUnauthorized)
+		return
+	}
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var mod models.ModelByID
+
+	err = json.Unmarshal(body, &mod)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	Order, err := s.db.OrderById(mod.Id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response := map[string]*models.OrderResponse{"data": Order}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

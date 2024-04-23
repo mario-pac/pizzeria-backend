@@ -6,9 +6,7 @@ import (
 	"go/pizzeria-backend/models"
 )
 
-func (d *DAO) GetConfigs() (*models.Config, error) {
-	id := 1
-
+func (d *DAO) ConfigById(id int64) (*models.Config, error) {
 	var configs *models.Config
 
 	q := "select * from settings where id = $1"

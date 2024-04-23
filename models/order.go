@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Order struct {
-	ID            int64      `json:"id" db:"id"`
+	Id            int64      `json:"id" db:"id"`
 	EmployeeId    int64      `json:"employee_id" db:"employee_id"`
 	TableNumber   int        `json:"table_number" db:"table_number"`
 	CustomerName  string     `json:"customer_name" db:"customer_name"`

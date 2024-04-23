@@ -9,7 +9,7 @@ import (
 	"go/pizzeria-backend/models"
 )
 
-func (d *DAO) ListOrders(filters *models.OrdersListFilters) ([]*models.Employee, error) {
+func (d *DAO) ListOrders(filters *models.OrdersListFilters) ([]*models.Order, error) {
 	q := "select * from employees"
 	var hasW = false
 
@@ -43,7 +43,7 @@ func (d *DAO) ListOrders(filters *models.OrdersListFilters) ([]*models.Employee,
 		addW("created_at <= " + filters.CreatedAtFinal.String())
 	}
 
-	var employees []*models.Employee
+	var employees []*models.Order
 
 	err := d.db.Select(&employees, q)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
@@ -65,7 +65,7 @@ func (d *DAO) InsertOrder(data models.Order) error {
 
 func (d *DAO) UpdateOrder(data models.Order) error {
 	q := "update employees set employee_id = $1, table_number = $2, customer_name = $3, total_value = $4, payment_method = $5, status = $6, note = $7, updated_at = $8 where id = $9"
-	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.ID)
+	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.Id)
 	if err != nil {
 		return err
 	}
@@ -96,13 +96,13 @@ func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 		return nil, err
 	}
 
-	orderItems, err = d.OrderItemsByIdOrder(order.ID)
+	orderItems, err = d.OrderItemsByIdOrder(order.Id)
 	if err != nil {
 		return nil, err
 	}
 
 	q = "select * from status where id = $1"
-	err = d.db.Get(&status, q, order.ID)
+	err = d.db.Get(&status, q, order.Id)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
