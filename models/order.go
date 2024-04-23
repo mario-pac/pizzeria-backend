@@ -13,6 +13,7 @@ type Order struct {
 	Note          string     `json:"note" db:"note"`
 	CreatedAt     *time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt     *time.Time `json:"updated_at" db:"updated_at"`
+	IdCompany     int        `json:"id_company" db:"id_company"`
 }
 
 type OrderResponse struct {
@@ -22,9 +23,10 @@ type OrderResponse struct {
 }
 
 type OrdersListFilters struct {
-	EmployeeId     *int64     `json:"employee_id"`
-	CustomerName   *string    `json:"customer_name"`
-	IdStatus       *int64     `json:"id_status"`
-	CreatedAtInit  *time.Time `json:"created_at_init"`
-	CreatedAtFinal *time.Time `json:"created_at_final"`
+	EmployeeId     *int64     `json:"employee_id" db:"employee_id"`
+	CustomerName   *string    `json:"customer_name" db:"employee_id"`
+	IdStatus       *int64     `json:"id_status" db:"id_status"`
+	CreatedAtInit  *time.Time `json:"created_at_init" db:"created_at"`
+	CreatedAtFinal *time.Time `json:"created_at_final" db:"created_at"`
+	IdCompany      int        `json:"id_company" db:"id_company"`
 }

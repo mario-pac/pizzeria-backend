@@ -2,11 +2,13 @@ CREATE TABLE
     employees_levels (
         id SMALLINT PRIMARY KEY NOT NULL,
         description VARCHAR(20) NOT NULL
+        company_id SMALLINT NOT NULL
     );
 
 CREATE TABLE
     employees (
         id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id_company SMALLINT REFERENCES companies (id) NOT NULL
         name VARCHAR(255) NOT NULL,
         username VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
@@ -22,6 +24,7 @@ CREATE TABLE
 CREATE TABLE
     products (
         id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id_company SMALLINT REFERENCES companies (id) NOT NULL
         description TEXT NOT NULL,
         price DECIMAL(10, 2) NOT NULL,
         category VARCHAR(255) NOT NULL,
@@ -36,6 +39,7 @@ CREATE TABLE
 CREATE TABLE
     orders (
         id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id_company SMALLINT REFERENCES companies (id) NOT NULL
         employee_id SERIAL REFERENCES employees(id),
         table_number SERIAL NOT NULL,
         customer_name VARCHAR(255) NOT NULL,
@@ -77,16 +81,26 @@ CREATE TABLE
     settings (
         id SMALLINT PRIMARY KEY NOT NULL,
         number_of_tables SERIAL NOT NULL,
-        company_name VARCHAR(255) NOT NULL
+        id_company SMALLINT REFERENCES companies (id) NOT NULL
     );
+
+CREATE TABLE
+    companies (
+        id SMALLINT PRIMARY KEY NOT NULL,
+        company_name VARCHAR(255) NOT NULL,
+        cnpj VARCHAR(255) NOT NULL
+    )
+
+INSERT INTO companies (id, company_name, cnpj) VALUES
+(1, 'Pizzaria Zé & Zé', '88.999.888/0001-99');
 
 INSERT INTO employees_levels (id, description) VALUES
 (1, 'Chef'),
 (2, 'Waiter'),
 (3, 'Manager');
 
-INSERT INTO products (id, description, price, category) VALUES 
-(1, 'Pizza de Margueritta', 12.99, 'Pizza');
+INSERT INTO products (id, description, price, category, id_company) VALUES 
+(1, 'Pizza de Margueritta', 12.99, 'Pizza', 1);
 
 INSERT INTO status (id, description, type) VALUES 
 (1, 'Pedido anotado', 'order_item'),
@@ -97,5 +111,5 @@ INSERT INTO status (id, description, type) VALUES
 (6, 'Pedido finalizado', 'order');
 
 
-INSERT INTO settings (id, number_of_tables, company_name) VALUES 
-(1, 10, 'Pizzaria Preço Baixo');
+INSERT INTO settings (id, number_of_tables, id_company) VALUES 
+(1, 10, 1);

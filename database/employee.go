@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -11,7 +10,7 @@ import (
 	"go/pizzeria-backend/utils"
 )
 
-func (d *DAO) ListEmployees(filters *models.EmployeeListFilters) ([]*models.Employee, error) {
+func (d *DAO) ListEmployees(filters models.EmployeeListFilters) ([]*models.Employee, error) {
 	q := "select * from employees"
 	var hasW = false
 
@@ -33,7 +32,7 @@ func (d *DAO) ListEmployees(filters *models.EmployeeListFilters) ([]*models.Empl
 		addW("level_id = " + strconv.FormatInt(*filters.LevelId, 10))
 	}
 
-	fmt.Println(q)
+	addW("id_company = " + strconv.FormatInt(int64(filters.IdCompany), 10))
 
 	var employees []*models.Employee
 
@@ -46,8 +45,8 @@ func (d *DAO) ListEmployees(filters *models.EmployeeListFilters) ([]*models.Empl
 }
 
 func (d *DAO) InsertEmployee(data models.Employee) error {
-	q := "insert into employees (name, username, password, level_id, created_at) values ($1, $2, $3, $4, $5)"
-	_, err := d.db.Exec(q, data.CompleteName, data.Username, utils.HashPassword(data.Password), data.Level_Id, time.Now())
+	q := "insert into employees (name, username, password, level_id, created_at, id_company) values ($1, $2, $3, $4, $5, $6)"
+	_, err := d.db.Exec(q, data.CompleteName, data.Username, utils.HashPassword(data.Password), data.Level_Id, time.Now(), data.IdCompany)
 	if err != nil {
 		return err
 	}

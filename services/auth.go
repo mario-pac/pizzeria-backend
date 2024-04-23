@@ -15,6 +15,7 @@ func (s *Service) CreateDefaultUser() error {
 		Username:     "admin",
 		Password:     "123Mudar",
 		Level_Id:     3,
+		IdCompany:    1,
 	}
 
 	err := s.db.InsertEmployee(employee)

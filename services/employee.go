@@ -30,7 +30,12 @@ func (s *Service) HandleListEmployees(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	employees, err := s.db.ListEmployees(filters)
+	if filters == nil {
+		http.Error(w, "é necessário informar o idEmpresa", http.StatusBadRequest)
+		return
+	}
+
+	employees, err := s.db.ListEmployees(*filters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -77,6 +82,11 @@ func (s *Service) HandleAddEmployee(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(strconv.Itoa(int(employee.Level_Id))) == 0 {
 		http.Error(w, "tipo funcionário é obrigatório!", http.StatusBadRequest)
+		return
+	}
+
+	if len(strconv.Itoa(int(employee.IdCompany))) == 0 {
+		http.Error(w, "idEmpresa é obrigatório!", http.StatusBadRequest)
 		return
 	}
 

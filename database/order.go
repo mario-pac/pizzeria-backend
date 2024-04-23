@@ -9,7 +9,7 @@ import (
 	"go/pizzeria-backend/models"
 )
 
-func (d *DAO) ListOrders(filters *models.OrdersListFilters) ([]*models.Order, error) {
+func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.Order, error) {
 	q := "select * from employees"
 	var hasW = false
 
@@ -43,6 +43,8 @@ func (d *DAO) ListOrders(filters *models.OrdersListFilters) ([]*models.Order, er
 		addW("created_at <= " + filters.CreatedAtFinal.String())
 	}
 
+	addW("id_company = " + strconv.FormatInt(int64(filters.IdCompany), 10))
+
 	var employees []*models.Order
 
 	err := d.db.Select(&employees, q)
@@ -54,8 +56,8 @@ func (d *DAO) ListOrders(filters *models.OrdersListFilters) ([]*models.Order, er
 }
 
 func (d *DAO) InsertOrder(data models.Order) error {
-	q := "insert into orders (employee_id, table_number, customer_name, total_value, payment_method, status, note, created_at) values ($1, $2, $3, $4, $5, $6, $7, $8)"
-	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now())
+	q := "insert into orders (employee_id, table_number, customer_name, total_value, payment_method, id_status, note, created_at, id_company) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
+	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.IdCompany)
 	if err != nil {
 		return err
 	}
@@ -64,7 +66,7 @@ func (d *DAO) InsertOrder(data models.Order) error {
 }
 
 func (d *DAO) UpdateOrder(data models.Order) error {
-	q := "update employees set employee_id = $1, table_number = $2, customer_name = $3, total_value = $4, payment_method = $5, status = $6, note = $7, updated_at = $8 where id = $9"
+	q := "update employees set employee_id = $1, table_number = $2, customer_name = $3, total_value = $4, payment_method = $5, id_status = $6, note = $7, updated_at = $8 where id = $9"
 	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.Id)
 	if err != nil {
 		return err
@@ -112,4 +114,17 @@ func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 	response.Self = order
 
 	return &response, nil
+}
+
+func (d *DAO) GetUsedDesks(idCompany int) ([]*models.Desk, error) {
+	var usedDesks []*models.Desk
+
+	q := "select table_number from orders where id_status <> 6 and id_company == $1"
+
+	err := d.db.Select(&usedDesks, q, idCompany)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return nil, err
+	}
+
+	return usedDesks, nil
 }

@@ -30,7 +30,12 @@ func (s *Service) HandleListProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	products, err := s.db.ListProducts(filters)
+	if filters == nil {
+		http.Error(w, "é necessário informar o idEmpresa", http.StatusBadRequest)
+		return
+	}
+
+	products, err := s.db.ListProducts(*filters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -73,6 +78,10 @@ func (s *Service) HandleAddProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(strconv.Itoa(int(product.Price))) == 0 {
 		http.Error(w, "preço é obrigatório!", http.StatusBadRequest)
+		return
+	}
+	if len(strconv.Itoa(product.IdCompany)) == 0 {
+		http.Error(w, "idEmpresa é obrigatório!", http.StatusBadRequest)
 		return
 	}
 

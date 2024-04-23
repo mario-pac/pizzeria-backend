@@ -30,7 +30,12 @@ func (s *Service) HandleListOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orders, err := s.db.ListOrders(filters)
+	if filters == nil {
+		http.Error(w, "é necessário informar o idEmpresa", http.StatusBadRequest)
+		return
+	}
+
+	orders, err := s.db.ListOrders(*filters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -69,6 +74,10 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	if order.EmployeeId == 0 {
 		http.Error(w, "funcionário é obrigatório!", http.StatusBadRequest)
+		return
+	}
+	if int64(order.IdCompany) == 0 {
+		http.Error(w, "idEmpresa é obrigatório!", http.StatusBadRequest)
 		return
 	}
 	if order.TableNumber == 0 {
@@ -192,13 +201,51 @@ func (s *Service) HandleOrderByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Order, err := s.db.OrderById(mod.Id)
+	order, err := s.db.OrderById(mod.Id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	response := map[string]*models.OrderResponse{"data": Order}
+	response := map[string]*models.OrderResponse{"data": order}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func (s *Service) HandleGetUsedTables(w http.ResponseWriter, r *http.Request) {
+	token := s.HandleConfirmToken(w, r)
+	if !token {
+		http.Error(w, "token inválido!", http.StatusUnauthorized)
+		return
+	}
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var mod models.ModelByID
+
+	err = json.Unmarshal(body, &mod)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if mod.Id == 0 {
+		http.Error(w, "idEmpresa é obrigatório", http.StatusBadRequest)
+		return
+	}
+
+	desks, err := s.db.GetUsedDesks(int(mod.Id))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response := map[string][]*models.Desk{"data": desks}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

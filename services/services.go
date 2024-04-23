@@ -45,10 +45,13 @@ func (s *Service) Listen() {
 	}
 
 	router := mux.NewRouter()
+	//root
 	router.HandleFunc("/", (s.RouteDefault)).Methods("GET")
+	//companies
+	router.HandleFunc("/listCompanies", s.HandleListCompanies).Methods("GET")
 	//login & logout
-	router.HandleFunc("/login", s.HandleLogin).Methods("PUT")
-	router.HandleFunc("/logout", s.HandleLogout).Methods("PUT")
+	router.HandleFunc("/login", s.HandleLogin).Methods("POST")
+	router.HandleFunc("/logout", s.HandleLogout).Methods("DELETE")
 	//authenticator
 	router.HandleFunc("/isTokenValid", s.IsTokenValid).Methods("GET")
 	//employees

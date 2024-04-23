@@ -3,12 +3,13 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"strconv"
 	"time"
 
 	"go/pizzeria-backend/models"
 )
 
-func (d *DAO) ListProducts(filters *models.ProductListFilters) ([]*models.Product, error) {
+func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product, error) {
 	var products []*models.Product
 
 	q := "select * from products"
@@ -32,6 +33,8 @@ func (d *DAO) ListProducts(filters *models.ProductListFilters) ([]*models.Produc
 		addW("category like '%" + *filters.Category + "%'")
 	}
 
+	addW("id_company = " + strconv.FormatInt(int64(filters.IdCompany), 10))
+
 	err := d.db.Select(&products, q)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
@@ -41,8 +44,8 @@ func (d *DAO) ListProducts(filters *models.ProductListFilters) ([]*models.Produc
 }
 
 func (d *DAO) InsertProduct(data models.Product) error {
-	q := "insert into products (description, price, category, created_at) values ($1, $2, $3, $4)"
-	_, err := d.db.Exec(q, data.Description, data.Price, data.Category, time.Now())
+	q := "insert into products (description, price, category, created_at, id_company) values ($1, $2, $3, $4, $5)"
+	_, err := d.db.Exec(q, data.Description, data.Price, data.Category, time.Now(), data.IdCompany)
 	if err != nil {
 		return err
 	}
