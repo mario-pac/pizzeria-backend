@@ -26,6 +26,7 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
   const form = useForm<Models.EmployeeResponse>()
 
   const [loading, setLoading] = useState(false)
+  const [novaSenha, setNovaSenha] = useState("")
 
   const [employeeLevels, setEmployeeLevels] = useState<Models.EmployeeLevel[]>([])
 
@@ -52,7 +53,6 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
   const setFormValues = (value: Models.EmployeeResponse) => {
     form.setValue('employeeLevel', value.employeeLevel);
     form.setValue('self', value.self);
-    form.setValue('self.password', "");
   }
 
   const getEmployeeLevels = async () => {
@@ -132,7 +132,12 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
         <Spacer height={12} />
         <Input label="Login" value={login} onChangeText={(s) => form.setValue('self.username', s)} />
         <Spacer height={12} />
-        <InputPassword label="Senha" value={senha} onChangeText={(s) => form.setValue('self.password', s)} />
+        {route.params?.id
+          ?
+          <InputPassword label="Senha" value={senha} onChangeText={(s) => form.setValue('self.password', s)} />
+          :
+          <InputPassword label="Senha" value={novaSenha} onChangeText={setNovaSenha} />
+        }
         <Spacer height={12} />
         <SelectInput
           label="Tipo Usuário"

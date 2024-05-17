@@ -52,27 +52,27 @@ func (s *Service) Listen() {
 	router.HandleFunc("/isTokenValid", s.IsTokenValid).Methods("GET") //ok
 	//employees
 	router.HandleFunc("/listEmployees", s.HandleListEmployees).Methods("GET") //ok
-	router.HandleFunc("/addEmployee", s.HandleAddEmployee).Methods("POST")
+	router.HandleFunc("/addEmployee", s.HandleAddEmployee).Methods("POST")    //ok
 	router.HandleFunc("/updateEmployee", s.HandleUpdateEmployee).Methods("PUT")
 	router.HandleFunc("/removeEmployee", s.HandleRemoveEmployee).Methods("DELETE")
 	router.HandleFunc("/employeeById", s.HandleEmployeeByID).Methods("GET") //ok
 	//products
 	router.HandleFunc("/listProducts", s.HandleListProducts).Methods("GET") //ok
-	router.HandleFunc("/addProduct", s.HandleAddProduct).Methods("POST")
+	router.HandleFunc("/addProduct", s.HandleAddProduct).Methods("POST")    //ok
 	router.HandleFunc("/updateProduct", s.HandleUpdateProduct).Methods("PUT")
 	router.HandleFunc("/removeProduct", s.HandleRemoveProduct).Methods("DELETE")
 	router.HandleFunc("/productById", s.HandleProductByID).Methods("GET") //ok
 	//orders
 	router.HandleFunc("/listOrders", s.HandleListOrders).Methods("GET") //ok
-	router.HandleFunc("/addOrder", s.HandleAddOrder).Methods("POST")
+	router.HandleFunc("/addOrder", s.HandleAddOrder).Methods("POST")    //ok
 	router.HandleFunc("/updateOrder", s.HandleUpdateOrder).Methods("PUT")
 	router.HandleFunc("/removeOrder", s.HandleRemoveOrder).Methods("DELETE")
 	router.HandleFunc("/orderById", s.HandleOrderByID).Methods("GET") //ok
 	//order items
-	router.HandleFunc("/addOrderItem", s.HandleAddOrderItem).Methods("POST")
+	router.HandleFunc("/addOrderItem", s.HandleAddOrderItem).Methods("POST") //ok
 	router.HandleFunc("/updateOrderItem", s.HandleUpdateOrderItem).Methods("PUT")
 	router.HandleFunc("/removeOrderItem", s.HandleRemoveOrderItem).Methods("DELETE")
-	router.HandleFunc("/orderItemById", s.HandleOrderItemByID).Methods("GET")
+	router.HandleFunc("/orderItemById", s.HandleOrderItemByID).Methods("GET") //ok
 	//employee levels
 	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("GET") //ok
 	//configs
