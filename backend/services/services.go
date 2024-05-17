@@ -42,44 +42,41 @@ func (s *Service) Listen() {
 
 	router := mux.NewRouter()
 	//root
-	router.HandleFunc("/", (s.RouteDefault)).Methods("GET")
+	router.HandleFunc("/", (s.RouteDefault)).Methods("GET") //ok
 	//companies
-	router.HandleFunc("/listCompanies", s.HandleListCompanies).Methods("GET")
+	router.HandleFunc("/listCompanies", s.HandleListCompanies).Methods("GET") //ok
 	//login & logout
-	router.HandleFunc("/login", s.HandleLogin).Methods("POST")
-	router.HandleFunc("/logout", s.HandleLogout).Methods("DELETE")
+	router.HandleFunc("/login", s.HandleLogin).Methods("POST")     //ok
+	router.HandleFunc("/logout", s.HandleLogout).Methods("DELETE") //ok
 	//authenticator
-	router.HandleFunc("/isTokenValid", s.IsTokenValid).Methods("GET")
+	router.HandleFunc("/isTokenValid", s.IsTokenValid).Methods("GET") //ok
 	//employees
-	router.HandleFunc("/listEmployees", s.HandleListEmployees).Methods("PUT")
+	router.HandleFunc("/listEmployees", s.HandleListEmployees).Methods("GET") //ok
 	router.HandleFunc("/addEmployee", s.HandleAddEmployee).Methods("POST")
 	router.HandleFunc("/updateEmployee", s.HandleUpdateEmployee).Methods("PUT")
 	router.HandleFunc("/removeEmployee", s.HandleRemoveEmployee).Methods("DELETE")
-	router.HandleFunc("/employeeById", s.HandleEmployeeByID).Methods("PUT")
+	router.HandleFunc("/employeeById", s.HandleEmployeeByID).Methods("GET") //ok
 	//products
-	router.HandleFunc("/listProducts", s.HandleListProducts).Methods("PUT")
+	router.HandleFunc("/listProducts", s.HandleListProducts).Methods("GET") //ok
 	router.HandleFunc("/addProduct", s.HandleAddProduct).Methods("POST")
 	router.HandleFunc("/updateProduct", s.HandleUpdateProduct).Methods("PUT")
 	router.HandleFunc("/removeProduct", s.HandleRemoveProduct).Methods("DELETE")
-	router.HandleFunc("/productById", s.HandleProductByID).Methods("PUT")
+	router.HandleFunc("/productById", s.HandleProductByID).Methods("GET") //ok
 	//orders
-	router.HandleFunc("/listOrders", s.HandleListOrders).Methods("PUT")
+	router.HandleFunc("/listOrders", s.HandleListOrders).Methods("GET") //ok
 	router.HandleFunc("/addOrder", s.HandleAddOrder).Methods("POST")
 	router.HandleFunc("/updateOrder", s.HandleUpdateOrder).Methods("PUT")
 	router.HandleFunc("/removeOrder", s.HandleRemoveOrder).Methods("DELETE")
-	router.HandleFunc("/orderById", s.HandleOrderByID).Methods("PUT")
+	router.HandleFunc("/orderById", s.HandleOrderByID).Methods("GET") //ok
 	//order items
 	router.HandleFunc("/addOrderItem", s.HandleAddOrderItem).Methods("POST")
 	router.HandleFunc("/updateOrderItem", s.HandleUpdateOrderItem).Methods("PUT")
 	router.HandleFunc("/removeOrderItem", s.HandleRemoveOrderItem).Methods("DELETE")
-	router.HandleFunc("/orderItemById", s.HandleEmployeeByID).Methods("PUT")
+	router.HandleFunc("/orderItemById", s.HandleOrderItemByID).Methods("GET")
 	//employee levels
-	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("PUT")
-	router.HandleFunc("/EmployeeLevelById", s.HandleEmployeeLevelByID).Methods("PUT")
+	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("GET") //ok
 	//configs
-	router.HandleFunc("/ConfigById", s.HandleConfigByID).Methods("PUT")
-	//statuses
-	router.HandleFunc("/StatusById", s.HandleStatusByID).Methods("PUT")
+	router.HandleFunc("/configById", s.HandleConfigByID).Methods("GET") //ok
 
 	log.Fatal(http.ListenAndServe(":8080", router)) //prepara o serviço na porta e rota especificadas
 }

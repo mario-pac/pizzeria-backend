@@ -35,15 +35,15 @@ const FinishOrder: React.FC<ScreenBaseProps<'FinishOrder'>> = ({ navigation, rou
         }
     }
 
-    const disabled = !order?.payment_method?.length
+    const disabled = !order?.paymentMethod?.length
 
     return (
         <S.Container>
-            <Input label="Valor total do pedido" disabled value={order?.total_value ? formatPrice(order?.total_value) : ''} />
+            <Input label="Valor total do pedido" disabled value={order?.totalValue ? formatPrice(order?.totalValue) : ''} />
             <Spacer height={12} />
             <SelectInput
                 label="Forma de pagamento"
-                value={order?.payment_method}
+                value={order?.paymentMethod}
                 items={[
                     { label: "Crédito a vista", value: "credit" },
                     { label: "Débito a vista", value: "debit" },
@@ -51,10 +51,10 @@ const FinishOrder: React.FC<ScreenBaseProps<'FinishOrder'>> = ({ navigation, rou
                 ]}
                 onValueChange={(v) => {
                     if (v) {
-                        setOrder({ ...order!, payment_method: v });
+                        setOrder({ ...order!, paymentMethod: v });
                         return
                     }
-                    setOrder({ ...order!, payment_method: '' });
+                    setOrder({ ...order!, paymentMethod: '' });
                 }}
                 placeholder="Selecione uma opção..."
             />

@@ -7,7 +7,7 @@ import (
 )
 
 func (d *DAO) ConfigById(id int64) (*models.Config, error) {
-	var configs *models.Config
+	var configs models.Config
 
 	q := "select * from settings where id = $1"
 	err := d.db.Get(&configs, q, id)
@@ -15,5 +15,5 @@ func (d *DAO) ConfigById(id int64) (*models.Config, error) {
 		return nil, err
 	}
 
-	return configs, nil
+	return &configs, nil
 }

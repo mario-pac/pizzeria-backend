@@ -1,32 +1,49 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import {  LogBox } from "react-native";
-
 import DeskCard from "components/Cards/DeskCard";
+import LoadingPanel from "components/LoadingPanel";
 
 import * as S from "./styles";
+import { Gets } from "api/index";
+import { useMe } from "providers/user";
+import { showToast } from "utils/toast";
+import { AxiosError } from "axios";
 
 const Desks: React.FC = () => {
-  LogBox.ignoreAllLogs();
-  const [deskNumber, setDeskNumber] = useState(0);
-  const desks: number[] = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-  ];
+  const me = useMe()
 
-  const getDesks = useCallback(async () => {}, []);
+  const [loading, setLoading] = useState(false)
+  const [desks, setDesks] = useState<number[]>([]);
+
+  const getDesks = useCallback(async () => {
+    try {
+      setLoading(true)
+      const cfgs = await Gets.getConfigsById(me.user!.token)
+      if (cfgs) {
+        appendTables(cfgs.numberOfTables)
+      }
+    } catch (error) {
+      showToast("error", "Erro ao consultar número de mesas: " + (error as AxiosError)?.response?.data)
+    } finally {
+      setLoading(false)
+    }
+  }, []);
+
+  function appendTables(tablesCount: number) {
+    const arr = []
+
+    for (let i = 1; i <= tablesCount; i++) {
+      arr.push(i)
+    }
+
+    setDesks(arr)
+  }
 
   useEffect(() => {
     getDesks();
   }, [getDesks]);
 
-  useEffect(() => {
-    if (deskNumber) {
-      for (let i = 1; i <= deskNumber; i++) {
-        desks.push(i);
-      }
-    }
-  }, [deskNumber]);
+  if (loading) return <LoadingPanel loading />
 
   return (
     <S.Container>

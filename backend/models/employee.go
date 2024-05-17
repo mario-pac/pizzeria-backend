@@ -9,19 +9,19 @@ type Employee struct {
 	CompleteName string     `json:"name" db:"name"`
 	Username     string     `json:"username" db:"username"`
 	Password     string     `json:"password" db:"password"`
-	Level_Id     int64      `json:"level_id" db:"level_id"`
-	CreatedAt    *time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt    *time.Time `json:"updated_at" db:"updated_at"`
-	IdCompany    int        `json:"id_company" db:"id_company"`
+	Level_Id     int64      `json:"levelId" db:"level_id"`
+	CreatedAt    *time.Time `json:"createdAt" db:"created_at"`
+	UpdatedAt    *time.Time `json:"updatedAt" db:"updated_at"`
+	IdCompany    int        `json:"idCompany" db:"id_company"`
 }
 
 type EmployeeResponse struct {
 	Self          Employee       `json:"self"`
-	EmployeeLevel *EmployeeLevel `json:"employee_level"`
+	EmployeeLevel *EmployeeLevel `json:"employeeLevel"`
 }
 
 type EmployeeListFilters struct {
 	Name      *string `json:"name" db:"name"`
-	LevelId   *int64  `json:"level_id" db:"level_id"`
-	IdCompany int     `json:"id_company" db:"id_company"`
+	LevelId   *int64  `json:"levelId" db:"level_id"`
+	IdCompany int     `json:"idCompany" db:"id_company"`
 }

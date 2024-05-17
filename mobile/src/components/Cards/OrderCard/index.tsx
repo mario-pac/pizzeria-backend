@@ -44,27 +44,27 @@ const OrderCard: React.FC<Props> = ({ order, onPress, disabled }) => {
           </S.Title>
           <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <S.Subtitle bold>
-              Responsável: <S.Subtitle>{order.employee_id}</S.Subtitle>
+              Responsável: <S.Subtitle>{order.employeeId}</S.Subtitle>
             </S.Subtitle>
             <S.Subtitle bold>
-              Cliente: <S.Subtitle>{order.customer_name}</S.Subtitle>
+              Cliente: <S.Subtitle>{order.customerName}</S.Subtitle>
             </S.Subtitle>
           </View>
           <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <S.Subtitle bold>
-              Nº mesa: <S.Subtitle>{order.table_number}</S.Subtitle>
+              Nº mesa: <S.Subtitle>{order.tableNumber}</S.Subtitle>
             </S.Subtitle>
             <S.Subtitle bold>
-              Valor: <S.Subtitle>{order.total_value}</S.Subtitle>
+              Valor: <S.Subtitle>{order.totalValue}</S.Subtitle>
             </S.Subtitle>
           </View>
           <S.Subtitle bold>
-            Status: <S.Subtitle>{order.id_status}</S.Subtitle>
+            Status: <S.Subtitle>{order.idStatus}</S.Subtitle>
           </S.Subtitle>
           <S.Subtitle bold>
             Data Início:{" "}
             <S.Subtitle>
-              {order.created_at?.toLocaleString("pt-BR", {
+              {order.createdAt?.toLocaleString("pt-BR", {
                 day: "numeric",
                 month: "numeric",
                 year: "numeric",
@@ -76,7 +76,7 @@ const OrderCard: React.FC<Props> = ({ order, onPress, disabled }) => {
           <S.Subtitle bold>
             Últ. Alteração:{" "}
             <S.Subtitle>
-              {order.updated_at?.toLocaleString("pt-BR", {
+              {order.updatedAt?.toLocaleString("pt-BR", {
                 day: "numeric",
                 month: "numeric",
                 year: "numeric",

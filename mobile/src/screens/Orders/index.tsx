@@ -19,7 +19,7 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
   const me = useMe()
 
   const [filter, setFilter] = useState<Models.OrderListFilters>({
-    id_company: 1,
+    idCompany: 1,
   });
 
   const [orders, setOrders] = useState<Models.Order[]>([])

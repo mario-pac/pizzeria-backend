@@ -12,6 +12,6 @@ type Login struct {
 type LoginResponse struct {
 	Id       int64  `json:"id"`
 	Name     string `json:"name" `
-	Level_Id int64  `json:"level_id"`
+	Level_Id int64  `json:"levelId"`
 	Token    string `json:"token"`
 }

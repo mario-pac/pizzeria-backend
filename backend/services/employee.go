@@ -2,8 +2,8 @@ package services
 
 import (
 	"encoding/json"
-	"fmt"
 	"go/pizzeria-backend/models"
+	"go/pizzeria-backend/utils"
 	"io"
 	"net/http"
 	"strconv"
@@ -17,29 +17,21 @@ func (s *Service) HandleListEmployees(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filters := &models.EmployeeListFilters{}
+	filters := models.EmployeeListFilters{}
 
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	val := r.Header.Get("name")
+	filters.Name = &val
+
+	val = r.Header.Get("idCompany")
+	filters.IdCompany = utils.ConvertStringToInt(val)
+
+	val = r.Header.Get("levelId")
+	if val != "" {
+		aux := int64(utils.ConvertStringToInt(val))
+		filters.LevelId = &aux
 	}
 
-	fmt.Println(body)
-
-	err = json.Unmarshal(body, &filters)
-	if err != nil {
-		fmt.Printf("erro em unmarshall %s", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if filters == nil {
-		http.Error(w, "é necessário informar o idEmpresa", http.StatusBadRequest)
-		return
-	}
-
-	employees, err := s.db.ListEmployees(*filters)
+	employees, err := s.db.ListEmployees(filters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -167,21 +159,13 @@ func (s *Service) HandleRemoveEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idEmployee, err := strconv.Atoi(r.Header.Get("idEmployee"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = s.db.DeleteEmployee(mod.Id)
+	err = s.db.DeleteEmployee(int64(idEmployee))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -200,21 +184,13 @@ func (s *Service) HandleEmployeeByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idEmployee, err := strconv.Atoi(r.Header.Get("idEmployee"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	employee, err := s.db.EmployeeById(mod.Id)
+	employee, err := s.db.EmployeeById(int64(idEmployee))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

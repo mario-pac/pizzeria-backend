@@ -10,15 +10,32 @@ import { ScreenBaseProps } from "utils/index";
 
 import * as S from "./styles";
 import { Alert } from "react-native";
+import { Gets } from "api/index";
+import { useMe } from "providers/user";
+import { AxiosError } from "axios";
 
 const Settings: React.FC<ScreenBaseProps<"Settings">> = ({
   navigation,
 }) => {
 
+  const me = useMe()
+
   const [desks, setDesks] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const getDesks = useCallback(async () => { }, []);
+  const getDesks = useCallback(async () => {
+    try {
+      setLoading(true)
+      const cfgs = await Gets.getConfigsById(me.user!.token)
+      if (cfgs) {
+        setDesks(cfgs.numberOfTables)
+      }
+    } catch (error) {
+      showToast("error", "Erro ao consultar número de mesas: " + (error as AxiosError)?.response?.data)
+    } finally {
+      setLoading(false)
+    }
+  }, []);
 
   useEffect(() => {
     getDesks();
@@ -50,7 +67,7 @@ const Settings: React.FC<ScreenBaseProps<"Settings">> = ({
     <S.Container>
       <CountInput
         label="Número de mesas:"
-        value={desks.toString()}
+        value={desks?.toString()}
         onChangeText={(s) => setDesks(Number(s))}
         textAlign="center"
         keyboardType="numeric"

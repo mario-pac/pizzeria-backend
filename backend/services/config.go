@@ -3,8 +3,8 @@ package services
 import (
 	"encoding/json"
 	"go/pizzeria-backend/models"
-	"io"
 	"net/http"
+	"strconv"
 )
 
 func (s *Service) HandleConfigByID(w http.ResponseWriter, r *http.Request) {
@@ -14,21 +14,13 @@ func (s *Service) HandleConfigByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idConfig, err := strconv.Atoi(r.Header.Get("idConfig"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	cfg, err := s.db.ConfigById(mod.Id)
+	cfg, err := s.db.ConfigById(int64(idConfig))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

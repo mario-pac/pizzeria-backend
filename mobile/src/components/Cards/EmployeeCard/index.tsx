@@ -48,9 +48,9 @@ const EmployeeCard: React.FC<Props> = ({ employee, onPress }) => {
           <S.Subtitle bold>
             Tipo Usuário:{" "}
             <S.Subtitle>
-              {employee.level_id === 2
+              {employee.levelId === 2
                 ? "Administrador"
-                : employee.level_id === 1
+                : employee.levelId === 1
                   ? "Cozinheiro"
                   : "Garçom"}
             </S.Subtitle>

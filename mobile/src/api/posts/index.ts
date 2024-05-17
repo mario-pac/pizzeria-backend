@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { backendUrl } from "utils/utils";
 import { UserDTO } from "storage/user/userDTO";
 
@@ -15,7 +15,6 @@ export const handleLogin = async (username: string, password: string) => {
       url: backendUrl + '/login', data: body
     })
       .then(async ({ data }) => {
-        console.log(data);
         const response: { user: UserDTO, message: string } = {
           user: data.data,
           message: "Login realizado com sucesso!"
@@ -23,7 +22,7 @@ export const handleLogin = async (username: string, password: string) => {
         resolve(response)
       })
       .catch((error) => {
-        reject("Erro ao efetuar login:" + error)
+        reject("Erro ao efetuar login:" + (error as AxiosError).response?.data)
       });
   })
 

@@ -37,7 +37,7 @@ const UserProvider: React.FC<UserProps> = ({ children }) => {
     }
 
     async function checkToken() {
-        if (user?.token) {
+        if (user?.token.length) {
             const resp = await isTokenValid(user?.token);
             if (typeof resp === 'undefined') {
                 showToast('error', 'Token inválido!')

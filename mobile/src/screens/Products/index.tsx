@@ -17,7 +17,7 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({ navigation, route }) 
   const me = useMe()
 
   const [filter, setFilter] = useState<Models.ProductListFilters>({
-    id_company: 1,
+    idCompany: 1,
   });
 
   const [products, setProducts] = useState<Models.Product[]>([])

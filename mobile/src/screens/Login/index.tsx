@@ -31,7 +31,6 @@ const Login: React.FC<Props> = ({ navigation }) => {
     setLoading(true);
     try {
       const resp = await Posts.handleLogin(login, password)
-      console.log(resp.user);
       await addUser(resp.user)
       showToast('success', resp.message);
       navigation.navigate("Home");

@@ -18,22 +18,20 @@ func (s *Service) HandleListProducts(w http.ResponseWriter, r *http.Request) {
 
 	filters := &models.ProductListFilters{}
 
-	body, err := io.ReadAll(r.Body)
+	val := r.Header.Get("description")
+	if val != "" {
+		filters.Description = &val
+	}
+	val = r.Header.Get("category")
+	if val != "" {
+		filters.Category = &val
+	}
+	idCompany, err := strconv.Atoi(r.Header.Get("idCompany"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
-
-	err = json.Unmarshal(body, &filters)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if filters == nil {
-		http.Error(w, "é necessário informar o idEmpresa", http.StatusBadRequest)
-		return
-	}
+	filters.IdCompany = idCompany
 
 	products, err := s.db.ListProducts(*filters)
 	if err != nil {
@@ -154,21 +152,13 @@ func (s *Service) HandleRemoveProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idProduct, err := strconv.Atoi(r.Header.Get("idProduct"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = s.db.DeleteProduct(mod.Id)
+	err = s.db.DeleteProduct(int64(idProduct))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -187,21 +177,13 @@ func (s *Service) HandleProductByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idProduct, err := strconv.Atoi(r.Header.Get("idProduct"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	product, err := s.db.ProductById(mod.Id)
+	product, err := s.db.ProductById(int64(idProduct))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

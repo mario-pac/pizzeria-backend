@@ -10,6 +10,8 @@ import * as S from "./styles";
 import Loading from "components/Loading";
 import { Gets, Models } from "api/index";
 import { useMe } from "providers/user";
+import { isAxiosError } from "axios";
+import { showToast } from "utils/toast";
 
 const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -17,7 +19,7 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
   const me = useMe()
 
   const [filter, setFilter] = useState<Models.EmployeeListFilters>({
-    id_company: 1,
+    idCompany: 1,
   });
 
   const [employees, setEmployees] = useState<Models.Employee[]>([])
@@ -30,7 +32,9 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
         setEmployees(response)
       }
     } catch (error) {
-      console.log(error)
+      if (isAxiosError(error)) {
+        showToast('error', error.response?.data)
+      }
     } finally {
       setLoading(false)
     }

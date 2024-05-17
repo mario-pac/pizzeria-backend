@@ -102,7 +102,7 @@ func (s *Service) IsTokenValid(w http.ResponseWriter, r *http.Request) {
 	// Verificar e decodificar o token JWT
 	_, err := auth.VerifyToken(tokenString)
 	if err != nil {
-		http.Error(w, "erro: token inválido!", http.StatusUnauthorized)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 

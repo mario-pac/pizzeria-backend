@@ -1,28 +1,25 @@
 import React from "react";
 
-import RNPickerSelect from "react-native-picker-select";
+import RNPickerSelect, { Item } from "react-native-picker-select";
 
 import * as S from "./styles";
 import { useTheme } from "styled-components/native";
 import { View } from "react-native";
 
-interface Item {
-  label: string;
-  value: string;
-}
-
-interface SelectInputProps {
-  value?: any;
+interface SelectInputProps<T> {
+  value?: string;
   disabled?: boolean;
   label?: string;
   labelSecondary?: boolean;
   width?: number;
-  onValueChange: (value: any) => void;
+  onValueChange: (value: T) => void;
   placeholder?: string;
-  items: Item[];
+  items: T[];
+  keyOfLabel: keyof T;
+  keyOfValue: keyof T;
 }
 
-const SelectInput: React.FC<SelectInputProps> = ({
+function SelectInput<T>({
   value,
   label,
   disabled,
@@ -31,8 +28,20 @@ const SelectInput: React.FC<SelectInputProps> = ({
   onValueChange,
   placeholder,
   items,
-}) => {
+  keyOfLabel,
+  keyOfValue
+}: SelectInputProps<T>) {
   const theme = useTheme();
+
+  const its: Item[] = []
+
+  for (const item of items) {
+    its.push({
+      label: item[keyOfLabel] as string,
+      value: item[keyOfValue] as string
+    })
+  }
+
   return (
     <S.Container width={width}>
       <S.Label secondary={labelSecondary}>{!!label ? label : ""}</S.Label>
@@ -48,8 +57,8 @@ const SelectInput: React.FC<SelectInputProps> = ({
           onValueChange={onValueChange}
           disabled={disabled}
           value={value}
-          placeholder={placeholder}
-          items={items}
+          placeholder={{ label: placeholder }}
+          items={its}
         />
       </View>
     </S.Container>

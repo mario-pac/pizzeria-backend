@@ -3,9 +3,11 @@ package services
 import (
 	"encoding/json"
 	"go/pizzeria-backend/models"
+	"go/pizzeria-backend/utils"
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func (s *Service) HandleListOrders(w http.ResponseWriter, r *http.Request) {
@@ -18,22 +20,42 @@ func (s *Service) HandleListOrders(w http.ResponseWriter, r *http.Request) {
 
 	filters := &models.OrdersListFilters{}
 
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	val := r.Header.Get("customerName")
+	filters.CustomerName = &val
+
+	val = r.Header.Get("employeeId")
+	if val != "" {
+		aux := int64(utils.ConvertStringToInt(val))
+		filters.EmployeeId = &aux
 	}
 
-	err = json.Unmarshal(body, &filters)
-	if err != nil {
-
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+	val = r.Header.Get("idStatus")
+	if val != "" {
+		aux := int64(utils.ConvertStringToInt(val))
+		filters.IdStatus = &aux
 	}
 
-	if filters == nil {
-		http.Error(w, "é necessário informar o idEmpresa", http.StatusBadRequest)
-		return
+	val = r.Header.Get("idCompany")
+	filters.IdCompany = utils.ConvertStringToInt(val)
+
+	val = r.Header.Get("createdAtInit")
+	if val != "" {
+		createdAtInit, err := time.Parse("20060102", val)
+		if err != nil {
+			http.Error(w, "erro ao converter dados de string para time", http.StatusBadRequest)
+			return
+		}
+		filters.CreatedAtInit = &createdAtInit
+	}
+
+	val = r.Header.Get("createdAtFinal")
+	if val != "" {
+		createdAtFinal, err := time.Parse("20060102", val)
+		if err != nil {
+			http.Error(w, "erro ao converter dados de string para time", http.StatusBadRequest)
+			return
+		}
+		filters.CreatedAtFinal = &createdAtFinal
 	}
 
 	orders, err := s.db.ListOrders(*filters)
@@ -188,21 +210,13 @@ func (s *Service) HandleOrderByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idOrder, err := strconv.Atoi(r.Header.Get("idOrder"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	order, err := s.db.OrderById(mod.Id)
+	order, err := s.db.OrderById(int64(idOrder))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -221,26 +235,13 @@ func (s *Service) HandleGetUsedTables(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idCompany, err := strconv.Atoi(r.Header.Get("idCompany"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if mod.Id == 0 {
-		http.Error(w, "idEmpresa é obrigatório", http.StatusBadRequest)
-		return
-	}
-
-	desks, err := s.db.GetUsedDesks(int(mod.Id))
+	desks, err := s.db.GetUsedDesks(idCompany)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

@@ -116,9 +116,7 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               onPress={() => navigation.navigate("Settings")}
             />
           </>
-        ) : <>
-          {console.log(user)}
-        </>}
+        ) : undefined}
       </S.Container >
     </>
   );
