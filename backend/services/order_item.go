@@ -153,3 +153,22 @@ func (s *Service) HandleOrderItemByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
+
+func (s *Service) HandleGetNextSequenceIdOrderItem(w http.ResponseWriter, r *http.Request) {
+	token := s.HandleConfirmToken(w, r)
+	if !token {
+		http.Error(w, "token inválido!", http.StatusUnauthorized)
+		return
+	}
+
+	newId, err := s.db.GetNextSequenceIdOrderItem()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response := map[string]int64{"data": newId}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}

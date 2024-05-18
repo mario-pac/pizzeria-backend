@@ -55,14 +55,19 @@ func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.Order, err
 	return employees, nil
 }
 
-func (d *DAO) InsertOrder(data models.Order) error {
+func (d *DAO) InsertOrder(data models.Order) (int64, error) {
 	q := "insert into orders (employee_id, table_number, customer_name, total_value, payment_method, id_status, note, created_at, id_company) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
-	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.IdCompany)
+	resp, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.IdCompany)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	id, err := resp.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 func (d *DAO) UpdateOrder(data models.Order) error {
@@ -88,7 +93,7 @@ func (d *DAO) DeleteOrder(id int64) error {
 func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 	var order models.Order
 	var orderItems []*models.OrderItemResponse
-	var status models.Status
+	var status *models.Status
 
 	var response models.OrderResponse
 
@@ -103,9 +108,8 @@ func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 		return nil, err
 	}
 
-	q = "select * from status where id = $1"
-	err = d.db.Get(&status, q, order.Id)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	status, err = d.StatusById(order.IdStatus)
+	if err != nil {
 		return nil, err
 	}
 

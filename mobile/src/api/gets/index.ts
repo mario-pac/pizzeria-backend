@@ -183,6 +183,24 @@ export const getConfigsById = async (token: string, idConfig?: number) => {
 
 // FIM REGION BY ID
 
+// REGION SEQUENCE
+export const getNextSequenceOrderItem = async (token: string) => {
+  return await new Promise<{ message: string }>((resolve, reject) => {
+    axios.get(backendUrl + "/getNextSequenceOrderItem", {
+      headers: {
+        Authorization: token
+      }
+    })
+      .then(({ data }) => {
+        resolve(data.data)
+      })
+      .catch((error) => {
+        reject("Erro ao buscar sequência de item de pedido:" + (error as AxiosError).response?.data)
+      });
+  })
+}
+// FIM REGION SEQUENCE
+
 export const isTokenValid = async (token: string) => {
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios.get(backendUrl + "/isTokenValid", {

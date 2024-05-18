@@ -58,6 +58,7 @@ export interface OrderResponse {
     self: Order;
     orderItems?: OrderItem[];
     status?: Status;
+    itemsDeleted?: number[];
 }
 
 export interface Product {

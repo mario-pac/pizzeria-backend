@@ -71,23 +71,36 @@ func (d *DAO) DeleteOrderItem(id int64) error {
 }
 
 func (d *DAO) OrderItemById(id int64) (*models.OrderItemResponse, error) {
-	var status models.Status
+	var status *models.Status
+	var orderItem models.OrderItem
 
 	var response models.OrderItemResponse
 
 	q := "select * from order_items where id = $1"
-	err := d.db.Get(&response, q, id)
+	err := d.db.Get(&orderItem, q, id)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
 
-	q = "select * from status where id = $1"
-	err = d.db.Get(&status, q, response.Self.IdOrderStatus)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	status, err = d.StatusById(orderItem.IdOrderStatus)
+	if err != nil {
 		return nil, err
 	}
 
-	response.OrderItemStatus = &status
+	response.Self = orderItem
+	response.OrderItemStatus = status
 
 	return &response, nil
+}
+
+func (d *DAO) GetNextSequenceIdOrderItem() (int64, error) {
+	var response int64
+
+	q := "select id from order_items order by id desc"
+	err := d.db.Get(&response, q)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return 0, err
+	}
+
+	return response, nil
 }

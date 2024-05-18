@@ -83,7 +83,7 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var order models.Order
+	var order models.OrderResponse
 
 	err = json.Unmarshal(body, &order)
 	if err != nil {
@@ -91,27 +91,32 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(order.CustomerName) == 0 {
+	if len(order.Self.CustomerName) == 0 {
 		http.Error(w, "nome do cliente é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if order.EmployeeId == 0 {
+	if order.Self.EmployeeId == 0 {
 		http.Error(w, "funcionário é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if int64(order.IdCompany) == 0 {
+	if int64(order.Self.IdCompany) == 0 {
 		http.Error(w, "idEmpresa é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if order.TableNumber == 0 {
+	if order.Self.TableNumber == 0 {
 		http.Error(w, "número da mesa é obrigatório!", http.StatusBadRequest)
 		return
 	}
 
-	err = s.db.InsertOrder(order)
+	id, err := s.db.InsertOrder(order.Self)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	for _, item := range order.OrderItems {
+		item.Self.OrderID = id
+		s.db.InsertOrderItem(item.Self)
 	}
 
 	response := map[string]string{"message": "Pedido adicionado com sucesso!"}
@@ -133,7 +138,7 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var order models.Order
+	var order models.OrderResponse
 
 	err = json.Unmarshal(body, &order)
 	if err != nil {
@@ -141,27 +146,46 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(order.CustomerName) == 0 {
+	if len(order.Self.CustomerName) == 0 {
 		http.Error(w, "nome do cliente é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if order.EmployeeId == 0 {
+	if order.Self.EmployeeId == 0 {
 		http.Error(w, "funcionário é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if order.TableNumber == 0 {
+	if order.Self.TableNumber == 0 {
 		http.Error(w, "número da mesa é obrigatório!", http.StatusBadRequest)
 		return
 	}
-	if len(strconv.Itoa(int(order.Id))) == 0 {
+	if len(strconv.Itoa(int(order.Self.Id))) == 0 {
 		http.Error(w, "o id do pedido é obrigatório!", http.StatusBadRequest)
 		return
 	}
 
-	err = s.db.UpdateOrder(order)
+	err = s.db.UpdateOrder(order.Self)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	for _, id := range order.ItemsDeleted {
+		if id != nil {
+			s.db.DeleteOrderItem(*id)
+		}
+	}
+
+	for _, item := range order.OrderItems {
+		hasItem, err := s.db.OrderItemById(item.Self.Id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if hasItem != nil {
+			s.db.UpdateOrderItem(item.Self)
+			continue
+		}
+		s.db.InsertOrderItem(item.Self)
 	}
 
 	response := map[string]string{"message": "Pedido atualizado com sucesso!"}
