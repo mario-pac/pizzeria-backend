@@ -1,15 +1,32 @@
 import axios, { AxiosError } from "axios";
-
-import { removeUser } from "storage/user/removeUser";
-import { UserDTO } from "storage/user/userDTO";
 import { backendUrl } from "utils/utils";
+import { Models } from "..";
+import { removeUser } from "storage/user/removeUser";
 
-export const handleRemoveEmployee = async (token: string, idEmployee: number) => {
+
+export const handleLogout = async () => {
   return await new Promise<{ message: string }>((resolve, reject) => {
-    axios.delete(backendUrl + '/removeEmployee', {
+    axios.put(backendUrl + '/logout')
+      .then(async () => {
+        await removeUser()
+        resolve({ message: "Deslogado com sucesso!" });
+      })
+      .catch((error) => {
+        reject("Erro ao fazer logoff:" + (error as AxiosError).response?.data);
+      });
+  })
+
+};
+
+export const handleUpdateEmployee = async (token: string, employee: Models.Employee) => {
+  const body = JSON.stringify({
+    employee,
+  });
+
+  return await new Promise<{ message: string }>((resolve, reject) => {
+    axios.put(backendUrl + '/updateEmployee', body, {
       headers: {
         Authorization: token,
-        "idEmployee": idEmployee
       },
     })
       .then(async ({ data }) => {
@@ -24,12 +41,15 @@ export const handleRemoveEmployee = async (token: string, idEmployee: number) =>
   })
 };
 
-export const handleRemoveProduct = async (token: string, idProduct: number) => {
+export const handleUpdateProduct = async (token: string, product: Models.Product) => {
+  const body = JSON.stringify({
+    product,
+  });
+
   return await new Promise<{ message: string }>((resolve, reject) => {
-    axios.delete(backendUrl + '/removeProduct', {
+    axios.put(backendUrl + '/updateProduct', body, {
       headers: {
         Authorization: token,
-        "idProduct": idProduct
       },
     })
       .then(async ({ data }) => {
@@ -44,12 +64,15 @@ export const handleRemoveProduct = async (token: string, idProduct: number) => {
   })
 };
 
-export const handleRemoveOrder = async (token: string, idOrder: number) => {
+export const handleUpdateOrder = async (token: string, order: Models.Order) => {
+  const body = JSON.stringify({
+    order,
+  });
+
   return await new Promise<{ message: string }>((resolve, reject) => {
-    axios.delete(backendUrl + '/removeOrder', {
+    axios.put(backendUrl + '/updateOrder', body, {
       headers: {
         Authorization: token,
-        "idOrder": idOrder
       },
     })
       .then(async ({ data }) => {
@@ -64,12 +87,15 @@ export const handleRemoveOrder = async (token: string, idOrder: number) => {
   })
 };
 
-export const handleRemoveOrderItem = async (token: string, idOrderItem: number) => {
+export const handleUpdateOrderItem = async (token: string, orderItem: Models.OrderItem) => {
+  const body = JSON.stringify({
+    orderItem,
+  });
+
   return await new Promise<{ message: string }>((resolve, reject) => {
-    axios.delete(backendUrl + '/removeOrderItem', {
+    axios.put(backendUrl + '/updateOrderItem', body, {
       headers: {
         Authorization: token,
-        'idOrderItem': idOrderItem
       },
     })
       .then(async ({ data }) => {

@@ -177,21 +177,27 @@ func (s *Service) HandleRemoveOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
+	idOrder, err := strconv.Atoi(r.Header.Get("idOrder"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	var mod models.ModelByID
-
-	err = json.Unmarshal(body, &mod)
+	items, err := s.db.OrderItemsByIdOrder(int64(idOrder))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "erro ao buscar itens do pedido", http.StatusBadRequest)
 		return
 	}
 
-	err = s.db.DeleteOrder(mod.Id)
+	for _, it := range items {
+		err = s.db.DeleteOrderItem(it.Self.Id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+
+	err = s.db.DeleteOrder(int64(idOrder))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
