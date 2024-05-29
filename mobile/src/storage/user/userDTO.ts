@@ -1,6 +1,7 @@
 export type UserDTO = {
     id: number;
     name: string;
-    level_id: number;
+    levelId: number;
     token: string;
+    idCompany: number;
 }

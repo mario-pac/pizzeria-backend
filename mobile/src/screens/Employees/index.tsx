@@ -1,51 +1,55 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
+import Loading from "components/Loading";
 import EmployeeCard from "components/Cards/EmployeeCard";
 
 import { ScreenBaseProps } from "utils/index";
+import { showToast } from "utils/toast";
+
+import { useMe } from "providers/user";
+import { useConfigs } from "providers/config";
+
+import { isAxiosError } from "axios";
+import { Gets, Models } from "api/index";
 
 import EmployeesHeader from "headers/EmployeesHeader";
 import * as S from "./styles";
-import Loading from "components/Loading";
-import { Gets, Models } from "api/index";
-import { useMe } from "providers/user";
-import { isAxiosError } from "axios";
-import { showToast } from "utils/toast";
 
 const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
-  const me = useMe()
+  const me = useMe();
+  const { config } = useConfigs();
 
   const [filter, setFilter] = useState<Models.EmployeeListFilters>({
-    idCompany: 1,
+    idCompany: config?.company.id ?? 1,
   });
 
-  const [employees, setEmployees] = useState<Models.Employee[]>([])
+  const [employees, setEmployees] = useState<Models.Employee[]>([]);
 
   const getEmployees = useCallback(async () => {
     try {
-      setLoading(true)
-      const response = await Gets.listEmployees(me.user!.token, filter)
+      setLoading(true);
+      const response = await Gets.listEmployees(me.user!.token, filter);
       if (response) {
-        setEmployees(response)
+        setEmployees(response);
       }
     } catch (error) {
       if (isAxiosError(error)) {
-        showToast('error', error.response?.data)
+        showToast("error", error.response?.data);
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [filter])
+  }, [filter]);
 
   useEffect(() => {
-    getEmployees()
-  }, [getEmployees])
+    getEmployees();
+  }, [getEmployees]);
 
   if (loading) {
-    return <Loading overlap />
+    return <Loading overlap />;
   }
 
   return (

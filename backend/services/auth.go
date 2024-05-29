@@ -55,10 +55,11 @@ func (s *Service) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := models.LoginResponse{
-		Id:       emp.Id,
-		Name:     emp.CompleteName,
-		Level_Id: emp.Level_Id,
-		Token:    token,
+		Id:        emp.Id,
+		Name:      emp.CompleteName,
+		Level_Id:  emp.Level_Id,
+		Token:     token,
+		IdCompany: int64(emp.IdCompany),
 	}
 
 	response := map[string]models.LoginResponse{"data": data}

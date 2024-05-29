@@ -71,6 +71,11 @@ export interface Product {
     idCompany: number;
 }
 
+export interface ProductCategory {
+    id: number
+    value: "Pizza" | "Drink"
+}
+
 export interface Settings {
     id: number;
     numberOfTables: number;

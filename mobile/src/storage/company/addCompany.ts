@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Models } from 'api/index';
 import { COMPANY_COLLECTION } from 'storage/index';
-import { CompanyDTO } from './companyDTO';
 
-export async function addCompany(newCompany: CompanyDTO) {
+export async function addCompany(newCompany: Models.Company) {
     try {
 
         const storage = JSON.stringify(newCompany);

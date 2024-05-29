@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
 import Input from "components/Input";
@@ -7,40 +7,70 @@ import Button from "components/Button";
 import CountInput from "components/CountInput";
 import SelectInput from "components/SelectInput";
 
+import { Gets, Models } from "api/index";
 import { ScreenBaseProps } from "utils/index";
 
 import ProductHeader from "headers/ProductHeader";
 import { showToast } from "utils/toast";
-import { Product } from "definitions/product";
 import { useCart } from "providers/cart";
-import { OrderItem } from "definitions/order_items";
 import * as S from "./styles";
+import { useFocusEffect } from "@react-navigation/native";
+import { useMe } from "providers/user";
+import { useForm } from "react-hook-form";
+import LoadingPanel from "components/LoadingPanel";
 
 const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
   navigation,
   route,
 }) => {
   const { addToCart } = useCart()
+  const me = useMe();
 
-  const [category, setCategory] = useState<string>("");
+  const form = useForm<Models.Product>()
+  
   const [quantity, setQuantity] = useState('0')
   const [loading, setLoading] = useState(false)
 
+  const callback = useCallback(async () => {
+    try {
+      const id = route.params?.id
+    if(id && me.user?.token){
+      const prod = await Gets.productById(me.user.token, id)
+      if(prod) {
+        setFormValues(prod)
+      }
+    }
+    } catch (error) {
+      showToast('error', 'Erro ao buscar produto: '+(error as Error).message)
+    }
+  }, [route.params])
+
+  const setFormValues = (prod: Models.Product) => {
+    const keys = Object.keys(prod);
+    for (const key of keys) {
+      form.setValue(key as keyof Models.Product, prod[key as keyof Models.Product])
+    }
+  }
+
+  useFocusEffect(useCallback(() => {
+    callback()
+  }, [callback]))
+
   const notToList = route.params?.notToList ?? false
 
-  const onAdd = (item: Product) => {
-    Alert.alert('Adicionar ao carrinho', `Deseja adicionar o produto #${item.Id} ao carrinho?`, [
+  const onAdd = (item: Models.Product) => {
+    Alert.alert('Adicionar ao carrinho', `Deseja adicionar o produto #${item.id} ao carrinho?`, [
       { text: "Sim", onPress: () => handleAdd(item) },
       { text: "Não" },
     ]);
   }
 
-  const handleAdd = (item: Product) => {
-    const orderItem: OrderItem = {
+  const handleAdd = (item: Models.Product) => {
+    const orderItem: Models.OrderItem = {
       ...item,
-      IdStatus: 0,
-      Quantity: Number(quantity),
-      Id: 0
+      idStatus: 0,
+      quantity: Number(quantity),
+      id: 0
     }
     addToCart(orderItem)
   }
@@ -73,7 +103,10 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
     }
   }
 
-  const product = {} as Product
+  const product = form.watch()
+  const category = form.watch('category')
+
+  if (loading) return <LoadingPanel loading/>
 
   return (
     <>
@@ -82,16 +115,17 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <Input label="Nome do Produto" disabled={notToList} />
           <Spacer height={12} />
-          <SelectInput
+          <SelectInput<Models.ProductCategory>
             label="Categoria"
+            keyOfLabel={"value"}
+            keyOfValue={"id"}
             value={category}
             items={[
-              { label: "Pizzas", value: "P" },
-              { label: "Bebidas", value: "B" },
+              
             ]}
             onValueChange={(v) => {
               if (v) {
-                setCategory(v.value);
+                form.setValue('category', v.value);
               }
             }}
             placeholder="Selecione uma opção..."

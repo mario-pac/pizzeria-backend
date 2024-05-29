@@ -10,8 +10,9 @@ type Login struct {
 }
 
 type LoginResponse struct {
-	Id       int64  `json:"id"`
-	Name     string `json:"name" `
-	Level_Id int64  `json:"levelId"`
-	Token    string `json:"token"`
+	Id        int64  `json:"id"`
+	Name      string `json:"name" `
+	Level_Id  int64  `json:"levelId"`
+	Token     string `json:"token"`
+	IdCompany int64  `json:"idCompany"`
 }

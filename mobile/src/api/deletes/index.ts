@@ -1,10 +1,9 @@
 import axios, { AxiosError } from "axios";
+import { getBackendUrl } from "utils/index";
 
-import { removeUser } from "storage/user/removeUser";
-import { UserDTO } from "storage/user/userDTO";
-import { backendUrl } from "utils/utils";
 
 export const handleRemoveEmployee = async (token: string, idEmployee: number) => {
+  const backendUrl = await getBackendUrl()
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios.delete(backendUrl + '/removeEmployee', {
       headers: {
@@ -25,6 +24,7 @@ export const handleRemoveEmployee = async (token: string, idEmployee: number) =>
 };
 
 export const handleRemoveProduct = async (token: string, idProduct: number) => {
+  const backendUrl = await getBackendUrl()
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios.delete(backendUrl + '/removeProduct', {
       headers: {
@@ -45,6 +45,7 @@ export const handleRemoveProduct = async (token: string, idProduct: number) => {
 };
 
 export const handleRemoveOrder = async (token: string, idOrder: number) => {
+  const backendUrl = await getBackendUrl()
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios.delete(backendUrl + '/removeOrder', {
       headers: {
@@ -65,6 +66,7 @@ export const handleRemoveOrder = async (token: string, idOrder: number) => {
 };
 
 export const handleRemoveOrderItem = async (token: string, idOrderItem: number) => {
+  const backendUrl = await getBackendUrl()
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios.delete(backendUrl + '/removeOrderItem', {
       headers: {

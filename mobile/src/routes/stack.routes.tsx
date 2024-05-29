@@ -21,6 +21,7 @@ import { RootStackParamList } from "./stack";
 import FinishOrder from "screens/FinishOrder";
 import ItemList from "screens/ItemList";
 import { useMe } from "providers/user";
+import HomeSetting from "screens/Login/setting";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -57,6 +58,11 @@ export const StackRoutes: React.FC = () => {
         name="Home"
         component={Home}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HomeSetting"
+        component={HomeSetting}
+        options={{ headerTitle: 'Configurações' }}
       />
       <Stack.Screen
         name="Settings"

@@ -45,6 +45,7 @@ func (s *Service) Listen() {
 	router.HandleFunc("/", (s.RouteDefault)).Methods("GET") //ok
 	//companies
 	router.HandleFunc("/listCompanies", s.HandleListCompanies).Methods("GET") //ok
+	router.HandleFunc("/companyById", s.HandleCompanyById).Methods("GET")     //ok
 	//login & logout
 	router.HandleFunc("/login", s.HandleLogin).Methods("POST")  //ok
 	router.HandleFunc("/logout", s.HandleLogout).Methods("PUT") //ok
@@ -73,6 +74,7 @@ func (s *Service) Listen() {
 	router.HandleFunc("/updateOrderItem", s.HandleUpdateOrderItem).Methods("PUT")                     //ok
 	router.HandleFunc("/removeOrderItem", s.HandleRemoveOrderItem).Methods("DELETE")                  //ok
 	router.HandleFunc("/orderItemById", s.HandleOrderItemByID).Methods("GET")                         //ok
+	router.HandleFunc("/orderItemsByIdOrder", s.HandleOrderItemByIdStatus).Methods("GET")              //ok
 	router.HandleFunc("/getNextSequenceOrderItem", s.HandleGetNextSequenceIdOrderItem).Methods("GET") //ok
 	//employee levels
 	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("GET") //ok

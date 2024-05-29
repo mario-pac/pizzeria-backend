@@ -21,7 +21,6 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
 
   const { user, setUser } = useMe()
 
-
   const gettingUser = useCallback(async () => {
     const us = await getUser()
     if (us) {
@@ -64,7 +63,7 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
         />
       </View>
       <S.Container>
-        {!!user && user.level_id === 1 ? (
+        {!!user && user.levelId === 1 ? (
           <>
             <OptionsCard
               name="Ver Cardápio"
@@ -87,13 +86,13 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               onPress={() => navigation.navigate("Desks", { newDesk: true })}
             />
           </>
-        ) : !!user && user.level_id === 2 ? <>
+        ) : !!user && user.levelId === 2 ? <>
           <OptionsCard
             name="Ver Lista de Itens a fazer"
             icon={{ name: "silverware-fork-knife", type: "material-community", size: 24 }}
             onPress={() => navigation.navigate("ItemList")}
           />
-        </> : !!user && user.level_id === 3 ? (
+        </> : !!user && user.levelId === 3 ? (
           <>
             <OptionsCard
               name="Ver Funcionários"

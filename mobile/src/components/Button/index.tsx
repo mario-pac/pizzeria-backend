@@ -3,6 +3,7 @@ import React from "react";
 import Icon, { IconProps } from "../Icon";
 
 import * as S from "./style";
+import { useTheme } from "styled-components/native";
 
 interface ButtonProps {
   value: string;
@@ -16,6 +17,7 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = (props) => {
+  const theme = useTheme()
   return (
     <S.Container
       width={props.width}
@@ -27,7 +29,7 @@ const Button: React.FC<ButtonProps> = (props) => {
         <S.Value outline={props.outline}>{props.value}</S.Value>
         {!!props.icon && (
           <S.IconView onLeft={props.iconOnLeft}>
-            <Icon {...props.icon} />
+            <Icon {...props.icon} right={false} color={ props.outline ? theme.colors.button.primary : theme.colors.text.primary}/>
           </S.IconView>
         )}
       </S.BorderWrapper>

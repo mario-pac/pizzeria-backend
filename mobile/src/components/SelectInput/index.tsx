@@ -59,7 +59,7 @@ function SelectInput<T>({
           value={value}
           placeholder={{ label: placeholder }}
           items={its}
-          useNativeAndroidPickerStyle={false}
+          useNativeAndroidPickerStyle={true}
         />
       </View>
     </S.Container>

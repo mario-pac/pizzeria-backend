@@ -6,6 +6,7 @@ export type RootStackParamList = {
   Employees: undefined;
   FinishOrder: undefined;
   Home: undefined;
+  HomeSetting: undefined;
   ItemList: undefined;
   Login: undefined;
   Menu: undefined;

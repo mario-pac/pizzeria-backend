@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
-import { useForm } from 'react-hook-form'
+import { useForm } from "react-hook-form";
 
 import Input from "components/Input";
 import Spacer from "components/Spacer";
 import Button from "components/Button";
-import Loading from "components/Loading";
 import SelectInput from "components/SelectInput";
 import InputPassword from "components/InputPassword";
 
@@ -16,128 +15,150 @@ import { ScreenBaseProps } from "utils/index";
 
 import EmployeeHeader from "headers/EmployeeHeader";
 import * as S from "./styles";
+import LoadingPanel from "components/LoadingPanel";
 
 const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
   navigation,
   route,
 }) => {
-  const me = useMe()
+  const me = useMe();
 
-  const form = useForm<Models.EmployeeResponse>()
+  const form = useForm<Models.EmployeeResponse>();
 
-  const [loading, setLoading] = useState(false)
-  const [novaSenha, setNovaSenha] = useState("")
+  const [loading, setLoading] = useState(false);
+  const [novaSenha, setNovaSenha] = useState("");
 
-  const [employeeLevels, setEmployeeLevels] = useState<Models.EmployeeLevel[]>([])
+  const [employeeLevels, setEmployeeLevels] = useState<Models.EmployeeLevel[]>(
+    []
+  );
 
   const getEmployeeById = async (id: number) => {
     try {
-      setLoading(true)
-      const res = await Gets.employeeById(me.user!.token, id)
+      setLoading(true);
+      const res = await Gets.employeeById(me.user!.token, id);
       if (res) {
-        setFormValues(res)
+        setFormValues(res);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (route.params?.id) {
-      getEmployeeById(route.params.id)
+      getEmployeeById(route.params.id);
     }
-  }, [route.params])
+  }, [route.params]);
 
   const setFormValues = (value: Models.EmployeeResponse) => {
-    form.setValue('employeeLevel', value.employeeLevel);
-    form.setValue('self', value.self);
-  }
+    form.setValue("employeeLevel", value.employeeLevel);
+    form.setValue("self", value.self);
+  };
 
   const getEmployeeLevels = async () => {
     try {
-      setLoading(true)
-      const res = await Gets.listEmployeeLevels(me.user!.token, 1)
+      setLoading(true);
+      const res = await Gets.listEmployeeLevels(me.user!.token, 1);
       if (res) {
-        setEmployeeLevels(res)
+        setEmployeeLevels(res);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    getEmployeeLevels()
-  }, [])
+    getEmployeeLevels();
+  }, []);
 
   const onPress = () => {
-    const title = route.params?.id ? 'ATUALIZAR' : 'SALVAR'
-    const subtitle = route.params?.id ? `Deseja atualizar o cadastro do funcionário #${route.params.id}?` : 'Deseja cadastrar o novo funcionário?'
+    const title = route.params?.id ? "ATUALIZAR" : "SALVAR";
+    const subtitle = route.params?.id
+      ? `Deseja atualizar o cadastro do funcionário #${route.params.id}?`
+      : "Deseja cadastrar o novo funcionário?";
     Alert.alert(title, subtitle, [
       { text: "Sim", onPress: handleConfirm },
       { text: "Não" },
     ]);
-  }
+  };
 
   const onCancel = () => {
-    const title = "Aviso"
-    const subtitle = "Deseja realmente cancelar o envio do formulário de funcionário?"
+    const title = "Aviso";
+    const subtitle =
+      "Deseja realmente cancelar o envio do formulário de funcionário?";
     Alert.alert(title, subtitle, [
       {
-        text: "Sim", onPress: () => {
-          showToast('success', 'Cancelado com sucesso.')
+        text: "Sim",
+        onPress: () => {
+          showToast("success", "Cancelado com sucesso.");
           navigation.goBack();
-        }
+        },
       },
       { text: "Não" },
     ]);
-  }
+  };
 
   const handleConfirm = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       if (route.params?.id) {
         //update
-        showToast("success", "Funcionário atualizado com sucesso!")
+        showToast("success", "Funcionário atualizado com sucesso!");
       } else {
         //save
-        showToast("success", "Funcionário criado com sucesso!")
+        showToast("success", "Funcionário criado com sucesso!");
       }
-      navigation.navigate('Employees')
+      navigation.navigate("Employees");
     } catch (error) {
-      const msg = (error as Error).message
-      showToast("error", msg)
+      const msg = (error as Error).message;
+      showToast("error", msg);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const employeeLevel = form.watch('employeeLevel')
-  const nomeCompleto = form.watch('self.name')
-  const login = form.watch('self.username')
-  const senha = form.watch('self.password')
+  const employeeLevel = form.watch("employeeLevel");
+  const nomeCompleto = form.watch("self.name");
+  const login = form.watch("self.username");
+  const senha = form.watch("self.password");
 
   if (loading) {
-    return <Loading />
+    return <LoadingPanel loading />;
   }
 
   return (
     <>
       <EmployeeHeader onGoBack={navigation.goBack} id={route.params?.id} />
       <S.Container>
-        <Input label="Nome Completo" value={nomeCompleto} onChangeText={(s) => form.setValue('self.name', s)} />
+        <Input
+          label="Nome Completo"
+          value={nomeCompleto}
+          onChangeText={(s) => form.setValue("self.name", s)}
+        />
         <Spacer height={12} />
-        <Input label="Login" value={login} onChangeText={(s) => form.setValue('self.username', s)} />
+        <Input
+          label="Login"
+          value={login}
+          onChangeText={(s) => form.setValue("self.username", s)}
+        />
         <Spacer height={12} />
-        {route.params?.id
-          ?
-          <InputPassword label="Senha" value={senha} onChangeText={(s) => form.setValue('self.password', s)} />
-          :
-          <InputPassword label="Senha" value={novaSenha} onChangeText={setNovaSenha} />
-        }
+        {route.params?.id ? (
+          <InputPassword
+            label="Senha"
+            value={senha}
+            onChangeText={(s) => form.setValue("self.password", s)}
+          />
+        ) : (
+          <InputPassword
+            label="Senha"
+            value={novaSenha}
+            onChangeText={setNovaSenha}
+          />
+        )}
         <Spacer height={12} />
         <SelectInput
           label="Tipo Usuário"
@@ -147,8 +168,8 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
           keyOfValue="id"
           onValueChange={(v) => {
             if (v) {
-              form.setValue('self.levelId', v.id)
-              form.setValue('employeeLevel', v)
+              form.setValue("self.levelId", v.id);
+              form.setValue("employeeLevel", v);
             }
           }}
           placeholder="Selecione uma opção..."

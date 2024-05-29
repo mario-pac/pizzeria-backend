@@ -110,7 +110,7 @@ INSERT INTO status (id, description) VALUES
 (3, 'Pronto para retirar'),
 (4, 'Pedido em andamento'),
 (5, 'Aguardando pagamento'),
-(6, 'Pedido finalizado');
+(6, 'Finalizado');
 
 
 INSERT INTO settings (id, number_of_tables, id_company) VALUES 

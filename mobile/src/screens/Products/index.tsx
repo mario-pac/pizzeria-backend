@@ -10,41 +10,46 @@ import * as S from "./styles";
 import { Models, Gets } from "api/index";
 import Loading from "components/Loading";
 import { useMe } from "providers/user";
+import { useConfigs } from "providers/config";
 
-const Products: React.FC<ScreenBaseProps<"Products">> = ({ navigation, route }) => {
+const Products: React.FC<ScreenBaseProps<"Products">> = ({
+  navigation,
+  route,
+}) => {
   const [loading, setLoading] = useState(false);
 
-  const me = useMe()
+  const me = useMe();
+  const { config } = useConfigs();
 
   const [filter, setFilter] = useState<Models.ProductListFilters>({
-    idCompany: 1,
+    idCompany: config?.company.id ?? 1,
   });
 
-  const [products, setProducts] = useState<Models.Product[]>([])
+  const [products, setProducts] = useState<Models.Product[]>([]);
 
   const getProducts = useCallback(async () => {
     try {
-      setLoading(true)
-      const response = await Gets.listProducts(me.user!.token, filter)
+      setLoading(true);
+      const response = await Gets.listProducts(me.user!.token, filter);
       if (response) {
-        setProducts(response)
+        setProducts(response);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [filter])
+  }, [filter]);
 
   useEffect(() => {
-    getProducts()
-  }, [getProducts])
+    getProducts();
+  }, [getProducts]);
 
   if (loading) {
-    return <Loading overlap />
+    return <Loading overlap />;
   }
 
-  const notToList = route.params?.notToList ?? false
+  const notToList = route.params?.notToList ?? false;
 
   return (
     <>

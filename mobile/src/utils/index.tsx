@@ -9,6 +9,7 @@ import { LayoutChangeEvent, TextInput } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigationProps, RootStackParamList } from "../routes/stack";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { getSetting } from "storage/setting/getSetting";
 
 type fn = () => void;
 
@@ -25,46 +26,6 @@ export function useStack() {
   return { navigation, route };
 }
 
-export function useInterval(callback: fn, delay: number | null) {
-  const savedCallback = useRef<fn>();
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      savedCallback.current!();
-    }
-    if (delay !== null) {
-      const id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
-
-type Dimensions = {
-  width: number;
-  height: number;
-};
-
-export function useComponentSize(): [
-  Dimensions | null,
-  (e: LayoutChangeEvent) => void
-] {
-  const [size, setSize] = useState<Dimensions | null>(null);
-
-  const onLayout = useCallback((event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-    setSize({ width, height });
-  }, []);
-
-  return [size, onLayout];
-}
-
 export function formatNumber(num: number, casas = 2) {
   return Intl.NumberFormat("pt-BR", {
     maximumFractionDigits: casas,
@@ -72,8 +33,9 @@ export function formatNumber(num: number, casas = 2) {
   }).format(num);
 }
 
-export function getBackendUrl() {
-  return "https://localhost:5194/api";
+export const getBackendUrl = async () => {
+  const setting = await getSetting()
+  return `http://${setting?.server}`;
 }
 
 /**

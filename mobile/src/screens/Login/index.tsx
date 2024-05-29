@@ -2,7 +2,6 @@
 import React, { useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 
-
 import Icon from "components/Icon";
 import Input from "components/Input";
 import Button from "components/Button";
@@ -13,9 +12,10 @@ import InputPassword from "components/InputPassword";
 import { focusNextInput, ScreenBaseProps } from "utils/index";
 import { useTheme } from "styled-components/native";
 import { showToast } from "utils/toast";
-import { Posts } from "api/index";
-import * as S from "./styles";
+import { Gets, Posts } from "api/index";
 import { addUser } from "storage/user/addUser";
+import * as S from "./styles";
+import { addCompany } from "storage/company/addCompany";
 
 type Props = ScreenBaseProps<"Login">;
 
@@ -32,6 +32,8 @@ const Login: React.FC<Props> = ({ navigation }) => {
     try {
       const resp = await Posts.handleLogin(login, password)
       await addUser(resp.user)
+      const company = await Gets.companyById(resp.user.token, resp.user.idCompany);
+      await addCompany(company);
       showToast('success', resp.message);
       navigation.navigate("Home");
     } catch (error) {
@@ -68,7 +70,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
           autoFocus
           onSubmitEditing={() => focusNextInput(passRef)}
         />
-        <Spacer height={28} />
+        <Spacer height={16} />
         <InputPassword
           placeholder="Senha"
           ref={passRef}
@@ -79,13 +81,26 @@ const Login: React.FC<Props> = ({ navigation }) => {
             return;
           }}
         />
-        <Spacer height={140} />
+        <Spacer height={10} />
         <Button
           value="Login"
           onPress={() => {
             onLogin();
           }}
           disabled={loading}
+        />
+        <Spacer height={10} />
+        <Button
+          value="Configurações"
+          outline
+          iconOnLeft
+          icon={{
+            name: "setting",
+            size: 24,
+            type: 'antdesign',
+            right: false
+          }}      
+          onPress={() => navigation.navigate('HomeSetting')}
         />
         <Version />
       </S.Content>

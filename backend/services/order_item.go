@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func (s *Service) HandleAddOrderItem(w http.ResponseWriter, r *http.Request) {
@@ -149,6 +150,28 @@ func (s *Service) HandleOrderItemByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := map[string]*models.OrderItemResponse{"data": OrderItem}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func (s *Service) HandleOrderItemByIdStatus(w http.ResponseWriter, r *http.Request) {
+	token := s.HandleConfirmToken(w, r)
+	if !token {
+		http.Error(w, "token inválido!", http.StatusUnauthorized)
+		return
+	}
+
+	trimmed := strings.Trim(r.Header.Get("ids"), "[]")
+	strSlice := strings.Split(trimmed, ", ")
+
+	orderItem, err := s.db.OrderItemsByIdsStatus(strSlice)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response := map[string][]*models.OrderItemResponse{"data": orderItem}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

@@ -13,6 +13,7 @@ import (
 
 func main() {
 	//Recebe as variáveis de inicialização
+
 	cfg, err := config.New()
 	if err != nil {
 		log.Fatalf("não pode iniciar o servidor: %v", err)

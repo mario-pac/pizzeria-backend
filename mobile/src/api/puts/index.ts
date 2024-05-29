@@ -1,10 +1,11 @@
 import axios, { AxiosError } from "axios";
-import { backendUrl } from "utils/utils";
+import { getBackendUrl } from "utils/index";
 import { Models } from "..";
 import { removeUser } from "storage/user/removeUser";
 
 
 export const handleLogout = async () => {
+  const backendUrl = await getBackendUrl()
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios.put(backendUrl + '/logout')
       .then(async () => {
@@ -19,6 +20,7 @@ export const handleLogout = async () => {
 };
 
 export const handleUpdateEmployee = async (token: string, employee: Models.Employee) => {
+  const backendUrl = await getBackendUrl()
   const body = JSON.stringify({
     employee,
   });
@@ -42,6 +44,7 @@ export const handleUpdateEmployee = async (token: string, employee: Models.Emplo
 };
 
 export const handleUpdateProduct = async (token: string, product: Models.Product) => {
+  const backendUrl = await getBackendUrl()
   const body = JSON.stringify({
     product,
   });
@@ -65,6 +68,7 @@ export const handleUpdateProduct = async (token: string, product: Models.Product
 };
 
 export const handleUpdateOrder = async (token: string, order: Models.Order) => {
+  const backendUrl = await getBackendUrl()
   const body = JSON.stringify({
     order,
   });
@@ -88,6 +92,7 @@ export const handleUpdateOrder = async (token: string, order: Models.Order) => {
 };
 
 export const handleUpdateOrderItem = async (token: string, orderItem: Models.OrderItem) => {
+  const backendUrl = await getBackendUrl()
   const body = JSON.stringify({
     orderItem,
   });

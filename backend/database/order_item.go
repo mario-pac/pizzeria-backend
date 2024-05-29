@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"strings"
 	"time"
 
 	"go/pizzeria-backend/models"
@@ -100,6 +101,40 @@ func (d *DAO) GetNextSequenceIdOrderItem() (int64, error) {
 	err := d.db.Get(&response, q)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return 0, err
+	}
+
+	return response, nil
+}
+
+func (d *DAO) OrderItemsByIdsStatus(idsStatus []string) ([]*models.OrderItemResponse, error) {
+	joinedValues := strings.Join(idsStatus, ",")
+	
+	q := "select * from order_items where id_status in ($1)"
+
+	var orderItems []*models.OrderItem
+
+	var response []*models.OrderItemResponse
+
+	err := d.db.Select(&orderItems, q, joinedValues)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return nil, err
+	}
+
+	for _, ordIt := range orderItems {
+		var status models.Status
+
+		q = "select * from status where id = $1"
+		err = d.db.Get(&status, q, ordIt.IdOrderStatus)
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return nil, err
+		}
+
+		i := models.OrderItemResponse{
+			Self:            *ordIt,
+			OrderItemStatus: &status,
+		}
+
+		response = append(response, &i)
 	}
 
 	return response, nil

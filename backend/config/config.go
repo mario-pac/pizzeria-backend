@@ -2,11 +2,10 @@ package config
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
+	"github.com/spf13/viper"
 )
 
 // DBConfig - contém os parâmetros para conexão do banco de dados
@@ -24,17 +23,26 @@ type Config struct {
 }
 
 func New() (*Config, error) {
-	if err := godotenv.Load(); err != nil {
-		return nil, errors.Wrap(err, "não pode carregar as variáveis de conexão")
+
+	viper.SetConfigName(".env") // Nome do arquivo de configuração (sem extensão)
+	viper.SetConfigType("json") // Tipo de arquivo de configuração (JSON neste caso)
+	viper.AddConfigPath("./")   // Caminho para o diretório onde o arquivo de configuração está localizado
+
+	err := viper.ReadInConfig() // Lê o arquivo de configuração (por exemplo, config.yml)
+
+	if err != nil {
+		panic(fmt.Errorf("erro ao ler o arquivo de configuração: %s", err))
 	}
+
+	viper.AutomaticEnv()
 
 	return &Config{
 		DBConfig: &DBConfig{
-			DbUser: os.Getenv("DB_USER"),
-			DbPass: os.Getenv("DB_PASS"),
-			DbHost: os.Getenv("DB_HOST"),
-			DbPort: os.Getenv("DB_PORT"),
-			DbSid:  os.Getenv("DB_SID"),
+			DbUser: viper.GetString("db_user"),
+			DbPass: viper.GetString("db_pass"),
+			DbHost: viper.GetString("db_host"),
+			DbPort: viper.GetString("db_port"),
+			DbSid:  viper.GetString("db_sid"),
 		},
 	}, nil
 }

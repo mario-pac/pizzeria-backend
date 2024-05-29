@@ -1,66 +1,65 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
+import Loading from "components/Loading";
 import OrderCard from "components/Cards/OrderCard";
 
 import { ScreenBaseProps } from "utils/index";
 
-import * as S from "./styles";
-import { useCart } from "providers/cart";
-import { Gets, Models } from "api/index";
 import { useMe } from "providers/user";
-import Loading from "components/Loading";
+import { useCart } from "providers/cart";
+
+import { Gets, Models } from "api/index";
+
+import * as S from "./styles";
+import { useConfigs } from "providers/config";
 
 const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
-  const { setOrder } = useCart()
+  const { setOrder } = useCart();
 
   const [loading, setLoading] = useState(false);
 
-  const me = useMe()
+  const me = useMe();
+  const { config } = useConfigs();
 
   const [filter, setFilter] = useState<Models.OrderListFilters>({
-    idCompany: 1,
+    idCompany: config?.company.id ?? 1,
   });
 
-  const [orders, setOrders] = useState<Models.Order[]>([])
+  const [orders, setOrders] = useState<Models.Order[]>([]);
 
   const getOrders = useCallback(async () => {
     try {
-      setLoading(true)
-      const response = await Gets.listOrders(me.user!.token, filter)
+      setLoading(true);
+      const response = await Gets.listOrders(me.user!.token, filter);
       if (response) {
-        setOrders(response)
+        setOrders(response);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [filter])
+  }, [filter]);
 
   useEffect(() => {
-    getOrders()
-  }, [getOrders])
+    getOrders();
+  }, [getOrders]);
 
   if (loading) {
-    return <Loading overlap />
+    return <Loading overlap />;
   }
 
   const onClick = (order: Models.Order) => {
-    setOrder(order)
-    navigation.navigate("Order")
-  }
+    setOrder(order);
+    navigation.navigate("Order");
+  };
 
   return (
     <S.Container>
       <FlatList
         data={orders}
-        renderItem={({ item }) => (
-          <OrderCard
-            order={item}
-            onPress={onClick}
-          />
-        )}
+        renderItem={({ item }) => <OrderCard order={item} onPress={onClick} />}
         style={{ paddingHorizontal: 24, paddingVertical: 16 }}
       />
     </S.Container>
