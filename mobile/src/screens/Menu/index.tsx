@@ -1,21 +1,40 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import * as S from "./styles";
 import ProductCard from "components/Cards/ProductCard";
 import { FlatList } from "react-native";
-import { Product } from "definitions/product";
 import { ScreenBaseProps } from "utils/index";
+import { Gets, Models } from "api/index";
+import { useMe } from "providers/user";
+import { showToast } from "utils/toast";
+import LoadingPanel from "components/LoadingPanel";
 
 const Menu: React.FC<ScreenBaseProps<"Menu">> = () => {
-  const products: Product[] = [
-    {
-      Id: 1,
-      Uuid: 'asdhjkashdjkashdjkahsjkdahs',
-      Description: "Pizza de Frango c/ Catupiry",
-      Category: "Pizza",
-      Price: 39.99,
-    },
-  ];
+  const me = useMe();
+
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState<Models.Product[]>([]);
+  const [filter, setFilter] = useState<Models.ProductListFilters>({
+    idCompany: me.user?.idCompany ?? 0,
+  });
+
+  const onInit = useCallback(async () => {
+    try {
+      setLoading(true);
+      const list = await Gets.listProducts(me.user?.token ?? "", filter);
+      setProducts(list);
+    } catch (error) {
+      showToast("error", (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    onInit();
+  }, [onInit]);
+
+  if (loading) return <LoadingPanel loading />;
 
   return (
     <S.Container>

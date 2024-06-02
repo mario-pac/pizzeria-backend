@@ -10,9 +10,11 @@ export type RootStackParamList = {
   ItemList: undefined;
   Login: undefined;
   Menu: undefined;
-  Order: undefined;
+  Order:
+    | { id?: number; tableNumber?: number; customerName?: string }
+    | undefined;
   Orders: undefined;
-  ProductForm: { id?: number, notToList?: boolean } | undefined;
+  ProductForm: { id?: number; notToList?: boolean } | undefined;
   Products: { notToList?: boolean } | undefined;
   Settings: undefined;
 };

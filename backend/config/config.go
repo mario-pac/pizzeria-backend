@@ -24,8 +24,8 @@ type Config struct {
 
 func New() (*Config, error) {
 
-	viper.SetConfigName(".env") // Nome do arquivo de configuração (sem extensão)
-	viper.SetConfigType("json") // Tipo de arquivo de configuração (JSON neste caso)
+	viper.SetConfigName("api.env") // Nome do arquivo de configuração (sem extensão)
+	viper.SetConfigType("env") // Tipo de arquivo de configuração (JSON neste caso)
 	viper.AddConfigPath("./")   // Caminho para o diretório onde o arquivo de configuração está localizado
 
 	err := viper.ReadInConfig() // Lê o arquivo de configuração (por exemplo, config.yml)
@@ -38,11 +38,11 @@ func New() (*Config, error) {
 
 	return &Config{
 		DBConfig: &DBConfig{
-			DbUser: viper.GetString("db_user"),
-			DbPass: viper.GetString("db_pass"),
-			DbHost: viper.GetString("db_host"),
-			DbPort: viper.GetString("db_port"),
-			DbSid:  viper.GetString("db_sid"),
+			DbUser: viper.GetString("DB_USER"),
+			DbPass: viper.GetString("DB_PASSWORD"),
+			DbHost: viper.GetString("DB_HOST"),
+			DbPort: viper.GetString("DB_PORT"),
+			DbSid:  viper.GetString("DB_NAME"),
 		},
 	}, nil
 }

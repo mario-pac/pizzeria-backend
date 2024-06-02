@@ -1,0 +1,15 @@
+FROM golang
+
+WORKDIR /src
+
+RUN go install github.com/cosmtrek/air@latest
+
+COPY ./backend /src
+
+COPY ./docker/api.env /src
+
+RUN go mod download
+
+RUN air init
+
+CMD air

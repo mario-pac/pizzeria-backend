@@ -6,6 +6,7 @@ interface Props {
   width?: string;
   outline?: boolean;
   disabled?: boolean;
+  color?: string;
 }
 
 export const Container = styled(RectButton).attrs({
@@ -21,10 +22,10 @@ export const Container = styled(RectButton).attrs({
   justify-content: center;
 
   border-radius: 4px;
-  background: ${({ theme, outline, enabled }) =>
+  background: ${({ theme, outline, enabled, color }) =>
     outline
       ? "transparent"
-      : enabled
+      : color ?? enabled
       ? theme.colors.button.primary
       : theme.colors.disabled};
 `;
@@ -38,8 +39,8 @@ export const BorderWrapper = styled.View<Props>`
   justify-content: center;
 
   border-radius: 4px;
-  border: ${({ theme, outline }) =>
-    outline ? `2px solid ${theme.colors.button.primary}` : "none"};
+  border: ${({ theme, outline, color }) =>
+    outline ? `2px solid ${color ?? theme.colors.button.primary}` : "none"};
 `;
 
 export const Value = styled.Text<Props>`

@@ -80,6 +80,7 @@ func (s *Service) Listen() {
 	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("GET") //ok
 	//configs
 	router.HandleFunc("/configById", s.HandleConfigByID).Methods("GET") //ok
+	router.HandleFunc("/listUsedDesks", s.HandleListUsedDesks).Methods("GET") //ok
 
 	log.Fatal(http.ListenAndServe(":8080", router)) //prepara o serviço na porta e rota especificadas
 }

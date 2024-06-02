@@ -19,18 +19,18 @@ import { removeUser } from "storage/user/removeUser";
 const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
   const theme = useTheme();
 
-  const { user, setUser } = useMe()
+  const { user, setUser } = useMe();
 
   const gettingUser = useCallback(async () => {
-    const us = await getUser()
+    const us = await getUser();
     if (us) {
-      setUser(us)
+      setUser(us);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    gettingUser()
-  }, [])
+    gettingUser();
+  }, []);
 
   const onLogout = () => {
     Alert.alert("SAIR", "Deseja sair da sua conta?", [
@@ -40,8 +40,8 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
   };
 
   const handleLogout = async () => {
-    setUser(undefined)
-    await removeUser()
+    setUser(undefined);
+    await removeUser();
     navigation.navigate("Login");
   };
 
@@ -52,7 +52,15 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
           onLogout();
         }}
       />
-      <View style={{ width: '100%', height: '100%', position: 'absolute', alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Icon
           name="pizza-slice"
           type="fontAwesome5"
@@ -65,6 +73,9 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
       <S.Container>
         {!!user && user.levelId === 1 ? (
           <>
+            {
+              //Garçom
+            }
             <OptionsCard
               name="Ver Cardápio"
               icon={{ name: "menu-book", type: "material", size: 24 }}
@@ -77,7 +88,11 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
             />
             <OptionsCard
               name="Ver Lista de Itens prontos"
-              icon={{ name: "silverware-fork-knife", type: "material-community", size: 24 }}
+              icon={{
+                name: "silverware-fork-knife",
+                type: "material-community",
+                size: 24,
+              }}
               onPress={() => navigation.navigate("ItemList")}
             />
             <OptionsCard
@@ -86,14 +101,26 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               onPress={() => navigation.navigate("Desks", { newDesk: true })}
             />
           </>
-        ) : !!user && user.levelId === 2 ? <>
-          <OptionsCard
-            name="Ver Lista de Itens a fazer"
-            icon={{ name: "silverware-fork-knife", type: "material-community", size: 24 }}
-            onPress={() => navigation.navigate("ItemList")}
-          />
-        </> : !!user && user.levelId === 3 ? (
+        ) : !!user && user.levelId === 2 ? (
           <>
+            {
+              //Chef
+            }
+            <OptionsCard
+              name="Ver Lista de Itens a fazer / em produção"
+              icon={{
+                name: "silverware-fork-knife",
+                type: "material-community",
+                size: 24,
+              }}
+              onPress={() => navigation.navigate("ItemList")}
+            />
+          </>
+        ) : !!user && user.levelId === 3 ? (
+          <>
+            {
+              //Administrador
+            }
             <OptionsCard
               name="Ver Funcionários"
               icon={{ name: "group-add", type: "material", size: 24 }}
@@ -116,7 +143,7 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
             />
           </>
         ) : undefined}
-      </S.Container >
+      </S.Container>
     </>
   );
 };

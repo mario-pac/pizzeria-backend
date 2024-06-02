@@ -7,7 +7,7 @@ export const Container = styled(RectButton)<{ active?: boolean }>`
   height: 60px;
   border-radius: 8px;
   background-color: ${({ active, theme }) =>
-    active ? theme.colors.status.active : theme.colors.disabled};
+    active ? theme.colors.status.active : theme.colors.status.error};
   align-items: center;
   justify-content: center;
 `;

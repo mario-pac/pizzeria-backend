@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"go/pizzeria-backend/models"
 )
 
@@ -16,4 +17,17 @@ func (d *DAO) ConfigById(id int64) (*models.Config, error) {
 	}
 
 	return &configs, nil
+}
+
+func (d *DAO) ListUsedTables(idCompany int64) ([]int64, error){
+	var tables []int64
+
+	q := "select table_number from orders where id_company = $1"
+
+	err := d.db.Get(&tables, q, idCompany)
+	if err != nil {
+		return nil, fmt.Errorf("erro ao buscar mesas usadas: %w", err)
+	}
+
+	return tables, nil
 }

@@ -126,6 +126,27 @@ export const listCompanies = async () => {
   });
 };
 
+export const listUsedDesks = async (token: string, idCompany: number) => {
+  const backendUrl = await getBackendUrl();
+  return await new Promise<number[]>((resolve, reject) => {
+    axios
+      .get(backendUrl + "/listUsedDesks", {
+        headers: {
+          Authorization: token,
+          idCompany: idCompany ?? "",
+        },
+      })
+      .then(({ data }) => {
+        resolve(data.data);
+      })
+      .catch((error) => {
+        reject(
+          "Erro ao buscar lista de mesas usadas:" +
+            (error as AxiosError).response?.data
+        );
+      });
+  });
+};
 // endregion
 
 // region BY ID

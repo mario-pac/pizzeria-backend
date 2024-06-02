@@ -50,16 +50,16 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
     return <Loading overlap />;
   }
 
-  const onClick = (order: Models.Order) => {
-    setOrder(order);
-    navigation.navigate("Order");
-  };
-
   return (
     <S.Container>
       <FlatList
         data={orders}
-        renderItem={({ item }) => <OrderCard order={item} onPress={onClick} />}
+        renderItem={({ item }) => (
+          <OrderCard
+            order={item}
+            onPress={(it) => navigation.navigate("Order", { id: it.id })}
+          />
+        )}
         style={{ paddingHorizontal: 24, paddingVertical: 16 }}
       />
     </S.Container>

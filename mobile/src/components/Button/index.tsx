@@ -14,22 +14,32 @@ interface ButtonProps {
   disabled?: boolean;
   onPress?: () => void;
   iconOnLeft?: boolean;
+  color?: string;
 }
 
 const Button: React.FC<ButtonProps> = (props) => {
-  const theme = useTheme()
+  const theme = useTheme();
   return (
     <S.Container
       width={props.width}
       outline={props.outline}
       onPress={props.onPress}
       enabled={!props.disabled}
+      color={props.color}
     >
-      <S.BorderWrapper outline={props.outline}>
+      <S.BorderWrapper outline={props.outline} color={props.color}>
         <S.Value outline={props.outline}>{props.value}</S.Value>
         {!!props.icon && (
           <S.IconView onLeft={props.iconOnLeft}>
-            <Icon {...props.icon} right={false} color={ props.outline ? theme.colors.button.primary : theme.colors.text.primary}/>
+            <Icon
+              {...props.icon}
+              right={false}
+              color={
+                props.outline
+                  ? theme.colors.button.primary
+                  : theme.colors.text.primary
+              }
+            />
           </S.IconView>
         )}
       </S.BorderWrapper>
