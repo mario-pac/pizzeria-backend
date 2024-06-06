@@ -9,19 +9,15 @@ interface Props {
   number: number;
   disabled?: boolean;
   onPress?: (number: number) => void;
+  onError?: () => void;
 }
 
-const DeskCard: React.FC<Props> = ({ number, disabled, onPress }) => {
+const DeskCard: React.FC<Props> = ({ number, disabled, onPress, onError }) => {
   return (
     <Shadows width="60" height="60">
       <S.Container
         onPress={() =>
-          onPress && !disabled
-            ? onPress(number)
-            : showToast(
-                "error",
-                "Essa mesa pode ser acessada pelo menu de Pedidos!"
-              )
+          onPress && !disabled ? onPress(number) : onError && onError()
         }
         active={!disabled}
       >

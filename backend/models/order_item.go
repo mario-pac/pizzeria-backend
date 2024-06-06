@@ -7,6 +7,7 @@ type OrderItem struct {
 	OrderID       int64      `json:"orderId" db:"order_id"`
 	ProductID     int64      `json:"productId" db:"product_id"`
 	Quantity      int        `json:"quantity" db:"quantity"`
+	Position      int        `json:"position" db:"position"`
 	IdOrderStatus int64      `json:"idOrderStatus" db:"id_order_status"`
 	CreatedAt     time.Time  `json:"createdAt" db:"created_at"`
 	UpdatedAt     *time.Time `json:"updatedAt" db:"updated_at"`

@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal, View, Text, TextInput } from "react-native";
+import React, { useState } from "react";
+import { Modal, View } from "react-native";
 
 import Button from "components/Button";
 import { useTheme } from "styled-components";
@@ -7,19 +7,13 @@ import Input from "components/Input";
 
 interface Props {
   showModal: boolean;
-  value?: string;
-  onChangeText?: (text: string) => void;
-  onClose?: () => void;
+  onClose?: (value: string) => void;
   closeModal?: () => void;
 }
 
-const ModalConfirmCustomerName: React.FC<Props> = ({
-  showModal,
-  onChangeText,
-  onClose,
-  value,
-}) => {
+const ModalConfirmCustomerName: React.FC<Props> = ({ showModal, onClose }) => {
   const theme = useTheme();
+  const [value, setValue] = useState("");
   return (
     <View>
       <Modal transparent={true} visible={showModal}>
@@ -44,11 +38,11 @@ const ModalConfirmCustomerName: React.FC<Props> = ({
             <Input
               label="Insira o nome do cliente:"
               value={value}
-              onChangeText={onChangeText}
+              onChangeText={setValue}
             />
             <Button
               value="Fechar"
-              onPress={onClose}
+              onPress={() => onClose && onClose(value)}
               color={theme.colors.status.error}
             />
           </View>

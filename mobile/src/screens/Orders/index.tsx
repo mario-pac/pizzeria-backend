@@ -7,16 +7,13 @@ import OrderCard from "components/Cards/OrderCard";
 import { ScreenBaseProps } from "utils/index";
 
 import { useMe } from "providers/user";
-import { useCart } from "providers/cart";
+import { useConfigs } from "providers/config";
 
 import { Gets, Models } from "api/index";
 
 import * as S from "./styles";
-import { useConfigs } from "providers/config";
 
 const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
-  const { setOrder } = useCart();
-
   const [loading, setLoading] = useState(false);
 
   const me = useMe();
@@ -24,6 +21,7 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
 
   const [filter, setFilter] = useState<Models.OrderListFilters>({
     idCompany: config?.company.id ?? 1,
+    employeeId: me.user!.id,
   });
 
   const [orders, setOrders] = useState<Models.Order[]>([]);

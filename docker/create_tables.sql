@@ -72,6 +72,7 @@ CREATE TABLE
 CREATE TABLE
     order_items (
         id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        position SMALLINT NOT NULL,
         order_id SERIAL REFERENCES orders(id) NOT NULL,
         product_id SERIAL REFERENCES products(id) NOT NULL,
         quantity SERIAL NOT NULL,

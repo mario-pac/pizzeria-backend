@@ -9,13 +9,16 @@ import { useMe } from "providers/user";
 import { showToast } from "utils/toast";
 import { AxiosError } from "axios";
 import { ScreenBaseProps } from "utils/index";
+import ModalConfirmCustomerName from "components/Modal/ModalConfirmCustomerName";
 
 const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
   const me = useMe();
 
   const [loading, setLoading] = useState(false);
   const [desks, setDesks] = useState<number[]>([]);
+  const [desk, setDesk] = useState<number>();
   const [usedDesks, setUsedDesks] = useState<number[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const getDesks = useCallback(async () => {
     try {
@@ -58,20 +61,42 @@ const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
     getDesks();
   }, [getDesks]);
 
+  const onError = () => {
+    showToast(
+      "error",
+      "Confira se esse atendimento é seu, olhe na sua tela de Pedidos."
+    );
+    navigation.navigate("Orders");
+  };
+
   if (loading) return <LoadingPanel loading />;
+
+  const createNewOrder = (clientName: string) => {
+    setShowModal(false);
+    navigation.navigate("Order", {
+      tableNumber: desk ?? 1,
+      customerName: clientName,
+    });
+  };
 
   return (
     <S.Container>
+      <ModalConfirmCustomerName
+        showModal={showModal}
+        closeModal={() => setShowModal(false)}
+        onClose={createNewOrder}
+      />
       {desks.map((item) => (
         <DeskCard
           number={item}
           disabled={usedDesks.includes(item)}
-          onPress={(n) =>
-            route.params?.newDesk &&
-            navigation.navigate("Order", {
-              tableNumber: n,
-            })
-          }
+          onPress={(n) => {
+            if (route.params?.newDesk) {
+              setDesk(n);
+              setShowModal(true);
+            }
+          }}
+          onError={onError}
         />
       ))}
     </S.Container>

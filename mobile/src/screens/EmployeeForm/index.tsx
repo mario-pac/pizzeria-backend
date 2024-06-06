@@ -10,7 +10,7 @@ import InputPassword from "components/InputPassword";
 
 import { useMe } from "providers/user";
 import { showToast } from "utils/toast";
-import { Gets, Models } from "api/index";
+import { Gets, Models, Posts, Puts } from "api/index";
 import { ScreenBaseProps } from "utils/index";
 
 import EmployeeHeader from "headers/EmployeeHeader";
@@ -106,13 +106,19 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
     setLoading(true);
     try {
       if (route.params?.id) {
-        //update
-        showToast("success", "Funcionário atualizado com sucesso!");
+        const msg = await Puts.handleUpdateEmployee(
+          me.user!.token,
+          employee.self
+        );
+        showToast("success", msg.message);
       } else {
-        //save
-        showToast("success", "Funcionário criado com sucesso!");
+        const msg = await Posts.handleInsertEmployee(
+          me.user!.token,
+          employee.self
+        );
+        showToast("success", msg.message);
       }
-      navigation.navigate("Employees");
+      navigation.replace("Employees");
     } catch (error) {
       const msg = (error as Error).message;
       showToast("error", msg);
@@ -121,6 +127,7 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
     }
   };
 
+  const employee = form.watch();
   const employeeLevel = form.watch("employeeLevel");
   const nomeCompleto = form.watch("self.name");
   const login = form.watch("self.username");
@@ -160,20 +167,28 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
           />
         )}
         <Spacer height={12} />
-        <SelectInput
-          label="Tipo Usuário"
-          value={employeeLevel?.description}
-          items={employeeLevels}
-          keyOfLabel="description"
-          keyOfValue="id"
-          onValueChange={(v) => {
-            if (v) {
-              form.setValue("self.levelId", v.id);
-              form.setValue("employeeLevel", v);
-            }
-          }}
-          placeholder="Selecione uma opção..."
-        />
+        {route.params?.id ? (
+          <Input
+            value={employeeLevel?.description}
+            disabled
+            label="Tipo Usuário"
+          />
+        ) : (
+          <SelectInput
+            label="Tipo Usuário"
+            value={employeeLevel?.description}
+            items={employeeLevels}
+            keyOfLabel="description"
+            keyOfValue="id"
+            onValueChange={(v) => {
+              if (v) {
+                form.setValue("self.levelId", v.id);
+                form.setValue("employeeLevel", v);
+              }
+            }}
+            placeholder="Selecione uma opção..."
+          />
+        )}
         <Spacer height={28} />
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "flex-end" }}

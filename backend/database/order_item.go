@@ -42,8 +42,8 @@ func (d *DAO) OrderItemsByIdOrder(id int64) ([]*models.OrderItemResponse, error)
 }
 
 func (d *DAO) InsertOrderItem(data models.OrderItem) error {
-	q := "insert into order_items (order_id, product_id, quantity, id_order_status, created_at) values ($1, $2, $3, $4, $5)"
-	_, err := d.db.Exec(q, data.OrderID, data.ProductID, data.Quantity, data.IdOrderStatus, time.Now())
+	q := "insert into order_items (order_id, product_id, quantity, position, id_order_status, created_at) values ($1, $2, $3, $4, $5, $6)"
+	_, err := d.db.Exec(q, data.OrderID, data.ProductID, data.Quantity, data.Position, data.IdOrderStatus, time.Now())
 	if err != nil {
 		return err
 	}
@@ -52,8 +52,8 @@ func (d *DAO) InsertOrderItem(data models.OrderItem) error {
 }
 
 func (d *DAO) UpdateOrderItem(data models.OrderItem) error {
-	q := "update employees set order_id = $1, product_id = $2, quantity = $3, id_order_status = $4, updated_at = $5 where id = $6"
-	_, err := d.db.Exec(q, data.OrderID, data.ProductID, data.Quantity, data.IdOrderStatus, time.Now(), data.Id)
+	q := "update employees set quantity = $1, id_order_status = $2, updated_at = $3 where id = $4"
+	_, err := d.db.Exec(q, data.Quantity, data.IdOrderStatus, time.Now(), data.Id)
 	if err != nil {
 		return err
 	}

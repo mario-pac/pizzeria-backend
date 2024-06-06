@@ -97,7 +97,10 @@ export const handleInsertProduct = async (
   });
 };
 
-export const handleInsertOrder = async (token: string, order: Models.Order) => {
+export const handleInsertOrder = async (
+  token: string,
+  order: Models.OrderResponse
+) => {
   const backendUrl = await getBackendUrl();
   const body = JSON.stringify({
     order,

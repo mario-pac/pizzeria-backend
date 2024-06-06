@@ -8,6 +8,8 @@ interface CartProps {
 interface CartData {
   order: Models.Order | undefined;
   items: Models.OrderItem[];
+  itemsDeleted: number[];
+  addItemDeleted: (item: number) => void;
   addToCart: (item: Models.OrderItem) => void;
   removeFromCart: (item: Models.OrderItem) => void;
   updateItemCart: (item: Models.OrderItem) => void;
@@ -20,11 +22,16 @@ const CartContext = createContext({} as CartData);
 
 const CartProvider: React.FC<CartProps> = ({ children }) => {
   const [items, setItems] = useState<Models.OrderItem[]>([]);
+  const [itemsDeleted, setItemsDeleted] = useState<number[]>([]);
 
   const [order, setOrder] = useState<Models.Order | undefined>();
 
   const addToCart = (item: Models.OrderItem) => {
     setItems([...items, item]);
+  };
+
+  const addItemDeleted = (item: number) => {
+    setItemsDeleted([...itemsDeleted, item]);
   };
 
   const updateItemCart = (item: Models.OrderItem) => {
@@ -47,6 +54,7 @@ const CartProvider: React.FC<CartProps> = ({ children }) => {
 
   const cleanCart = () => {
     setItems([]);
+    setItemsDeleted([]);
     setOrder(undefined);
   };
 
@@ -55,6 +63,8 @@ const CartProvider: React.FC<CartProps> = ({ children }) => {
       value={{
         items,
         addToCart,
+        itemsDeleted,
+        addItemDeleted,
         removeFromCart,
         updateItemCart,
         updateCart,
