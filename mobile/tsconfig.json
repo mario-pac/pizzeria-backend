@@ -4,39 +4,17 @@
     "jsx": "react",
     "strict": true,
     "paths": {
-      "api/*": [
-        "./src/api/*"
-      ],
-      "assets/*": [
-        "./src/assets/*"
-      ],
-      "components/*": [
-        "./src/components/*"
-      ],
-      "headers/*": [
-        "./src/headers/*"
-      ],
-      "hooks/*": [
-        "./src/hooks/*"
-      ],
-      "providers/*": [
-        "./src/providers/*"
-      ],
-      "routes/*": [
-        "./src/routes/*"
-      ],
-      "screens/*": [
-        "./src/screens/*"
-      ],
-      "storage/*": [
-        "./src/storage/*"
-      ],
-      "styles/*": [
-        "./src/styles/*"
-      ],
-      "utils/*": [
-        "./src/utils/*"
-      ]
+      "api/*": ["./src/api/*"],
+      "assets/*": ["./src/assets/*"],
+      "components/*": ["./src/components/*"],
+      "headers/*": ["./src/headers/*"],
+      "hooks/*": ["./src/hooks/*"],
+      "providers/*": ["./src/providers/*"],
+      "routes/*": ["./src/routes/*"],
+      "screens/*": ["./src/screens/*"],
+      "storage/*": ["./src/storage/*"],
+      "styles/*": ["./src/styles/*"],
+      "utils/*": ["./src/utils/*"]
     }
   }
 }

@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
+import Loading from "components/Loading";
 import ProductCard from "components/Cards/ProductCard";
+import ModalFiltersProducts from "components/Modal/ModalFiltersProducts";
 
+import { Models, Gets } from "api/index";
 import { ScreenBaseProps } from "utils/index";
+
+import { useMe } from "providers/user";
+import { useConfigs } from "providers/config";
 
 import ProductsHeader from "headers/ProductsHeader";
 import * as S from "./styles";
-import { Models, Gets } from "api/index";
-import Loading from "components/Loading";
-import { useMe } from "providers/user";
-import { useConfigs } from "providers/config";
 
 const Products: React.FC<ScreenBaseProps<"Products">> = ({
   navigation,
@@ -26,6 +28,7 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({
   });
 
   const [products, setProducts] = useState<Models.Product[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const getProducts = useCallback(async () => {
     try {
@@ -59,6 +62,12 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({
         notToList={notToList}
       />
       <S.Container>
+        <ModalFiltersProducts
+          filter={filter}
+          setFilter={setFilter}
+          showModal={showModal}
+          closeModal={() => setShowModal(false)}
+        />
         <FlatList
           data={products}
           renderItem={({ item }) => (

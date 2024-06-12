@@ -6,6 +6,18 @@ import (
 	"go/pizzeria-backend/models"
 )
 
+func (d *DAO) ListStatus() ([]*models.Status, error) {
+	var status []*models.Status
+
+	q := "select * from status"
+	err := d.db.Select(&status, q)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return nil, err
+	}
+
+	return status, nil
+}
+
 func (d *DAO) StatusById(id int64) (*models.Status, error) {
 	var status *models.Status
 

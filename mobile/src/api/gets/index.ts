@@ -109,6 +109,27 @@ export const listEmployeeLevels = async (token: string, idCompany: number) => {
   });
 };
 
+export const listStatus = async (token: string) => {
+  const backendUrl = await getBackendUrl();
+  return await new Promise<Models.Status[]>((resolve, reject) => {
+    axios
+      .get(backendUrl + "/listStatus", {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then(({ data }) => {
+        resolve(data.data);
+      })
+      .catch((error) => {
+        reject(
+          "Erro ao buscar lista de status de pedido:" +
+            (error as AxiosError).response?.data
+        );
+      });
+  });
+};
+
 export const listCompanies = async () => {
   const backendUrl = await getBackendUrl();
   return await new Promise<Models.Company[]>((resolve, reject) => {

@@ -3,6 +3,7 @@ import { FlatList } from "react-native";
 
 import Loading from "components/Loading";
 import EmployeeCard from "components/Cards/EmployeeCard";
+import ModalFiltersEmployees from "components/Modal/ModalFiltersEmployees";
 
 import { ScreenBaseProps } from "utils/index";
 import { showToast } from "utils/toast";
@@ -24,9 +25,12 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
 
   const [filter, setFilter] = useState<Models.EmployeeListFilters>({
     idCompany: config?.company.id ?? 1,
+    levelId: undefined,
+    name: "",
   });
 
   const [employees, setEmployees] = useState<Models.Employee[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const getEmployees = useCallback(async () => {
     try {
@@ -59,7 +63,13 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
         onAdd={() => navigation.navigate("EmployeeForm")}
       />
       <S.Container>
-        <FlatList
+        <ModalFiltersEmployees
+          filter={filter}
+          setFilter={setFilter}
+          showModal={showModal}
+          closeModal={() => setShowModal(false)}
+        />
+        <FlatList<Models.Employee>
           data={employees}
           renderItem={({ item }) => (
             <EmployeeCard

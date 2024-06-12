@@ -32,7 +32,7 @@ func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.Order, err
 	}
 
 	if filters.IdStatus != nil {
-		addW("id_status = " + strconv.FormatInt(*filters.EmployeeId, 10))
+		addW("id_status = " + strconv.FormatInt(*filters.IdStatus, 10))
 	}
 
 	if filters.CreatedAtInit != nil {
