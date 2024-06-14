@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -45,8 +46,15 @@ func (d *DAO) ListEmployees(filters models.EmployeeListFilters) ([]*models.Emplo
 }
 
 func (d *DAO) InsertEmployee(data models.Employee) error {
+	emp, err := d.UserByUsername(data.Username)
+	if err != nil {
+		return err
+	}
+	if emp != nil {
+		return fmt.Errorf("este usuário já está cadastrado no sistema")
+	}
 	q := "insert into employees (name, username, password, level_id, created_at, id_company) values ($1, $2, $3, $4, $5, $6)"
-	_, err := d.db.Exec(q, data.CompleteName, data.Username, utils.HashPassword(data.Password), data.Level_Id, time.Now(), data.IdCompany)
+	_, err = d.db.Exec(q, data.CompleteName, data.Username, utils.HashPassword(data.Password), data.Level_Id, time.Now(), data.IdCompany)
 	if err != nil {
 		return err
 	}

@@ -66,15 +66,10 @@ export interface Product {
   id: number;
   description: string;
   price: number;
-  category: "Pizza" | "Drink";
+  category: string;
   createdAt?: Date;
   updatedAt?: Date;
   idCompany: number;
-}
-
-export interface ProductCategory {
-  id: number;
-  value: "Pizza" | "Drink";
 }
 
 export interface Settings {

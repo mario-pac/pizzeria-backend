@@ -7,20 +7,20 @@ import (
 	"strconv"
 )
 
-func (s *Service) HandleConfigByID(w http.ResponseWriter, r *http.Request) {
+func (s *Service) HandleConfigByIDCompany(w http.ResponseWriter, r *http.Request) {
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
 		return
 	}
 
-	idConfig, err := strconv.Atoi(r.Header.Get("idConfig"))
+	idCompany, err := strconv.Atoi(r.Header.Get("idCompany"))
 	if err != nil {
 		http.Error(w, "erro ao converter dados de string para int", http.StatusBadRequest)
 		return
 	}
 
-	cfg, err := s.db.ConfigById(int64(idConfig))
+	cfg, err := s.db.ConfigByIdCompany(int64(idCompany))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

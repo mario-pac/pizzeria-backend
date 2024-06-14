@@ -22,3 +22,14 @@ func (d *DAO) Login(username string, password string) (*models.Employee, error) 
 
 	return &employee, nil
 }
+
+func (d *DAO) UserByUsername(username string) (*models.Employee, error){
+	var employee models.Employee
+	q := "select * from employees where username = $1"
+	err := d.db.Get(&employee, q, username)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return nil, err
+	}
+
+	return &employee, nil
+}

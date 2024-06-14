@@ -7,7 +7,6 @@ import Input from "components/Input";
 import Spacer from "components/Spacer";
 import Button from "components/Button";
 import CountInput from "components/CountInput";
-import SelectInput from "components/SelectInput";
 import LoadingPanel from "components/LoadingPanel";
 
 import { Gets, Models, Posts, Puts } from "api/index";
@@ -128,24 +127,12 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <Input label="Nome do Produto" disabled={notToList} />
           <Spacer height={12} />
-          {route.params?.id ? (
-            <Input value={category} disabled label="Categoria" />
-          ) : (
-            <SelectInput<Models.ProductCategory>
-              label="Categoria"
-              keyOfLabel={"value"}
-              keyOfValue={"id"}
-              value={category}
-              items={[]}
-              onValueChange={(v) => {
-                if (v) {
-                  form.setValue("category", v.value);
-                }
-              }}
-              placeholder="Selecione uma opção..."
-              disabled={notToList}
-            />
-          )}
+          <Input
+            value={category}
+            disabled={!!route.params?.id}
+            label="Categoria"
+            onChangeText={(s) => form.setValue("category", s)}
+          />
           <Spacer height={12} />
           <Input label="Descrição" disabled={notToList} />
           <Spacer height={12} />

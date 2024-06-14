@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import { Shadows } from "components/Shadows";
-import Icon, { IconProps } from "components/Icon";
+import Icon from "components/Icon";
 
 import { useTheme } from "styled-components/native";
 import * as S from "./styles";
@@ -15,12 +15,6 @@ type Props = {
 
 const ProductCard: React.FC<Props> = ({ product, onPress }) => {
   const theme = useTheme();
-  const icon: IconProps =
-    product.category == "Pizza"
-      ? { name: "pizza-slice", type: "fontAwesome5", size: 0 }
-      : product.category == "Drink"
-        ? { name: "drink", type: "entypo", size: 0 }
-        : { name: "question", type: "fontAwesome", size: 0 };
 
   return (
     <Shadows>
@@ -35,8 +29,8 @@ const ProductCard: React.FC<Props> = ({ product, onPress }) => {
           }}
         >
           <Icon
-            name={icon.name}
-            type={icon.type}
+            name="dollar"
+            type="fontisto"
             size={50}
             right={false}
             color={theme.colors.card}

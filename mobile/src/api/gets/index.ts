@@ -305,14 +305,17 @@ export const orderItemById = async (token: string, idOrderItem?: number) => {
   });
 };
 
-export const getConfigsById = async (token: string, idConfig?: number) => {
+export const getConfigByIdCompany = async (
+  token: string,
+  idCompany: number
+) => {
   const backendUrl = await getBackendUrl();
   return await new Promise<Models.Settings>((resolve, reject) => {
     axios
-      .get(backendUrl + "/configById", {
+      .get(backendUrl + "/configByIdCompany", {
         headers: {
           Authorization: token,
-          idConfig: idConfig ?? "1",
+          idCompany: idCompany ?? "1",
         },
       })
       .then(({ data }) => {
@@ -320,7 +323,7 @@ export const getConfigsById = async (token: string, idConfig?: number) => {
       })
       .catch((error) => {
         reject(
-          "Erro ao buscar configuração por id:" +
+          "Erro ao buscar configuração por id empresa:" +
             (error as AxiosError).response?.data
         );
       });

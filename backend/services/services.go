@@ -79,7 +79,7 @@ func (s *Service) Listen() {
 	//employee levels
 	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("GET") //ok
 	//configs
-	router.HandleFunc("/configById", s.HandleConfigByID).Methods("GET") //ok
+	router.HandleFunc("/configByIdCompany", s.HandleConfigByIDCompany).Methods("GET") //ok
 	router.HandleFunc("/listUsedDesks", s.HandleListUsedDesks).Methods("GET") //ok
 	//status
 	router.HandleFunc("/listStatus", s.HandleListStatus).Methods("GET")

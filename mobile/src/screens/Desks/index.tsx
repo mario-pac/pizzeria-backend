@@ -1,15 +1,19 @@
-import React, { useCallback, useEffect, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+
+import { AxiosError } from "axios";
 
 import DeskCard from "components/Cards/DeskCard";
 import LoadingPanel from "components/LoadingPanel";
+import ModalConfirmCustomerName from "components/Modal/ModalConfirmCustomerName";
+
+import { Gets } from "api/index";
+
+import { useMe } from "providers/user";
+
+import { showToast } from "utils/toast";
+import { ScreenBaseProps } from "utils/index";
 
 import * as S from "./styles";
-import { Gets } from "api/index";
-import { useMe } from "providers/user";
-import { showToast } from "utils/toast";
-import { AxiosError } from "axios";
-import { ScreenBaseProps } from "utils/index";
-import ModalConfirmCustomerName from "components/Modal/ModalConfirmCustomerName";
 
 const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
   const me = useMe();
@@ -23,7 +27,10 @@ const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
   const getDesks = useCallback(async () => {
     try {
       setLoading(true);
-      const cfgs = await Gets.getConfigsById(me.user!.token);
+      const cfgs = await Gets.getConfigByIdCompany(
+        me.user!.token,
+        me.user!.idCompany
+      );
       if (cfgs) {
         appendTables(cfgs.numberOfTables);
       }

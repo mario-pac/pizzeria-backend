@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { Alert } from "react-native";
+
+import { AxiosError } from "axios";
 
 import Button from "components/Button";
 import Loading from "components/Loading";
@@ -7,11 +10,10 @@ import CountInput from "components/CountInput";
 import { showToast } from "utils/toast";
 import { ScreenBaseProps } from "utils/index";
 
-import * as S from "./styles";
-import { Alert } from "react-native";
-import { Gets } from "api/index";
 import { useMe } from "providers/user";
-import { AxiosError } from "axios";
+
+import * as S from "./styles";
+import { Gets } from "api/index";
 
 const Settings: React.FC<ScreenBaseProps<"Settings">> = ({ navigation }) => {
   const me = useMe();
@@ -22,7 +24,10 @@ const Settings: React.FC<ScreenBaseProps<"Settings">> = ({ navigation }) => {
   const getDesks = useCallback(async () => {
     try {
       setLoading(true);
-      const cfgs = await Gets.getConfigsById(me.user!.token);
+      const cfgs = await Gets.getConfigByIdCompany(
+        me.user!.token,
+        me.user!.idCompany
+      );
       if (cfgs) {
         setDesks(cfgs.numberOfTables);
       }
