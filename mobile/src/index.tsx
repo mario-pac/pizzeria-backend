@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { StatusBar } from "expo-status-bar";
 import { ThemeProvider } from "styled-components/native";
@@ -24,11 +24,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LoadingPanel from "./components/LoadingPanel";
 import ErrorPage from "./components/ErrorPage";
 import { CartProvider } from "providers/cart";
-import { UserProvider, useMe } from "providers/user";
+import { UserProvider } from "providers/user";
 import { ConfigProvider } from "providers/config";
-import { isTokenValid } from "api/gets";
-import { showToast } from "utils/toast";
-import { getUser } from "storage/user/getUser";
 
 export default function App() {
   const [fontsLoaded, err] = useFonts({
@@ -38,8 +35,6 @@ export default function App() {
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
-
-
 
   if (err) {
     return (

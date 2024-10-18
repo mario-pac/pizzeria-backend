@@ -29,6 +29,7 @@ export type AppTheme = {
       color: string;
       placeholder: string;
       disabled: string;
+      text: string;
     };
     text: {
       primary: string;
@@ -64,16 +65,17 @@ export const theme: AppTheme = {
       warning: "#FF8811",
     },
     text: {
-      primary: "#002510",
-      secondary: "#FFFFFF",
+      primary: "#FFFFFF",
+      secondary: "#002510",
     },
     input: {
       backgroundColor: "#fff",
       color: "#454545",
       placeholder: "#6C6C6C",
       disabled: "#E0E0E4",
+      text: "#242424",
     },
-    background: "#CACACA",
+    background: "#242424",
     separator: "silver",
   },
 };

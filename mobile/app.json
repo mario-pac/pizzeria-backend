@@ -25,6 +25,18 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      ["expo-asset", {
+        "assets": [
+          "./node_modules/@expo-google-fonts/poppins/Poppins_400Regular.ttf",
+          "./node_modules/@expo-google-fonts/poppins/Poppins_500Medium.ttf",
+          "./node_modules/@expo-google-fonts/poppins/Poppins_500Medium_Italic.ttf",
+          "./node_modules/@expo-google-fonts/poppins/Poppins_600SemiBold.ttf",
+          "./node_modules/@expo-google-fonts/poppins/Poppins_700Bold.ttf"
+        ]
+      }],
+      "expo-font"
+    ]
   }
 }

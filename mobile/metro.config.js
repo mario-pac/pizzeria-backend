@@ -1,29 +1,19 @@
-const { getDefaultConfig } = require("@expo/metro-config");
+const { getDefaultConfig } = require('expo/metro-config');
 
-const defaultConfig = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname);
 
-const { makeMetroConfig } = require("@rnx-kit/metro-config");
-const MetroSymlinksResolver = require("@rnx-kit/metro-resolver-symlinks");
+const { transformer, resolver } = config;
 
-const symlinkResolver = MetroSymlinksResolver();
-
-const requestResolver = (context, moduleName, platform, realName) => {
-  // patch for unpatched dependencies
-  // e.g. react-native-version-check-expo
-  if (moduleName === "@unimodules/core") {
-    const expoModules = "expo-modules-core";
-    return symlinkResolver(context, expoModules, platform, expoModules);
-  }
-
-  return symlinkResolver(context, moduleName, platform, realName);
+config.transformer = {
+  ...transformer,
+  babelTransformerPath: require.resolve('react-native-svg-transformer'),
 };
 
-module.exports = {
-  ...defaultConfig,
-  ...makeMetroConfig({
-    projectRoot: __dirname,
-    resolver: {
-      resolveRequest: requestResolver,
-    },
-  }),
+config.resolver = {
+  ...resolver,
+  assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
+  sourceExts: [...resolver.sourceExts, 'svg'],
 };
+
+module.exports = config;
+

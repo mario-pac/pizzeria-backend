@@ -1,6 +1,5 @@
-import styled from "styled-components/native";
-import { StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+import styled from "styled-components/native";
 
 export const Container = styled.View<{ width?: number }>`
   width: ${({ width }) => width ?? 100}%;
@@ -42,7 +41,7 @@ export const TextInput = styled.TextInput.attrs({
 
     elevation: 1,
   },
-}) <ContentProps>`
+})<ContentProps>`
   width: 100%;
   height: ${({ observation }) => (observation ? 67 : 46)}px;
 
@@ -56,7 +55,7 @@ export const TextInput = styled.TextInput.attrs({
       : theme.colors.input.backgroundColor};
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: ${RFValue(13)}px;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.input.text};
 `;
 
 interface FooterProps {
@@ -69,5 +68,3 @@ export const Footer = styled.Text<FooterProps>`
   font-family: ${({ theme }) => theme.fonts.regular};
   color: ${({ color, theme }) => color ?? theme.colors.text.secondary};
 `;
-
-
