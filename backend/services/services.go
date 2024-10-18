@@ -30,7 +30,7 @@ func (s *Service) RouteDefault(w http.ResponseWriter, r *http.Request) {
 
 // Função que monta o serviço da api com as rotas
 func (s *Service) Listen() {
-	usr, _ := s.db.EmployeeById(1)
+	usr, _ := s.db.UserByUsername("admin")
 
 	if usr == nil {
 		err := s.CreateDefaultUser()
@@ -74,13 +74,13 @@ func (s *Service) Listen() {
 	router.HandleFunc("/updateOrderItem", s.HandleUpdateOrderItem).Methods("PUT")                     //ok
 	router.HandleFunc("/removeOrderItem", s.HandleRemoveOrderItem).Methods("DELETE")                  //ok
 	router.HandleFunc("/orderItemById", s.HandleOrderItemByID).Methods("GET")                         //ok
-	router.HandleFunc("/orderItemsByIdOrder", s.HandleOrderItemByIdStatus).Methods("GET")              //ok
+	router.HandleFunc("/orderItemsByIdOrder", s.HandleOrderItemByIdStatus).Methods("GET")             //ok
 	router.HandleFunc("/getNextSequenceOrderItem", s.HandleGetNextSequenceIdOrderItem).Methods("GET") //ok
 	//employee levels
 	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("GET") //ok
 	//configs
 	router.HandleFunc("/configByIdCompany", s.HandleConfigByIDCompany).Methods("GET") //ok
-	router.HandleFunc("/listUsedDesks", s.HandleListUsedDesks).Methods("GET") //ok
+	router.HandleFunc("/listUsedDesks", s.HandleListUsedDesks).Methods("GET")         //ok
 	//status
 	router.HandleFunc("/listStatus", s.HandleListStatus).Methods("GET")
 

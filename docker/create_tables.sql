@@ -103,11 +103,11 @@ INSERT INTO employees_levels (id, description, id_company) VALUES
 (3, 'Manager', 1);
 
 INSERT INTO products (id, description, price, category, id_company) VALUES 
-(1, 'Pizza de Margueritta', 42.99, 'Pizza G', 1);
-(2, 'Pizza de Calabresa', 46.49, 'Pizza G', 1);
-(3, 'Pizza de 4 Queijos', 50.89, 'Pizza G', 1);
-(4, 'Coca Cola 2L', 12.39, 'Bebidas', 1);
-(5, 'Cerveja Heineken 600ml', 6.90, 'Bebidas', 1);
+(1, 'Pizza de Margueritta', 42.99, 'Pizza G', 1),
+(2, 'Pizza de Calabresa', 46.49, 'Pizza G', 1),
+(3, 'Pizza de 4 Queijos', 50.89, 'Pizza G', 1),
+(4, 'Coca Cola 2L', 12.39, 'Bebidas', 1),
+(5, 'Cerveja Heineken 600ml', 6.90, 'Bebidas', 1),
 (6, 'Vinho Tinto Seco Casillera del Diablo', 34.59, 'Pizza', 1);
 
 INSERT INTO status (id, description) VALUES 
