@@ -30,9 +30,9 @@ func (s *Service) RouteDefault(w http.ResponseWriter, r *http.Request) {
 
 // Função que monta o serviço da api com as rotas
 func (s *Service) Listen() {
-	usr, _ := s.db.UserByUsername("admin")
+	hasUsr, _ := s.db.UserByUsername("admin")
 
-	if usr == nil {
+	if hasUsr == false {
 		err := s.CreateDefaultUser()
 		if err != nil {
 			log.Fatalf("Erro ao criar o user default(admin): %v", err)

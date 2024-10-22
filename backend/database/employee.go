@@ -46,17 +46,17 @@ func (d *DAO) ListEmployees(filters models.EmployeeListFilters) ([]*models.Emplo
 }
 
 func (d *DAO) InsertEmployee(data models.Employee) error {
-	emp, err := d.UserByUsername(data.Username)
+	hasUsr, err := d.UserByUsername(data.Username)
 	if err != nil {
-		return err
+		return fmt.Errorf("erro ao buscar usuário por nome: %w", err)
 	}
-	if emp != nil {
+	if hasUsr {
 		return fmt.Errorf("este usuário já está cadastrado no sistema")
 	}
-	q := "insert into employees (name, username, password, level_id, created_at, id_company) values ($1, $2, $3, $4, $5, $6)"
-	_, err = d.db.Exec(q, data.CompleteName, data.Username, utils.HashPassword(data.Password), data.Level_Id, time.Now(), data.IdCompany)
+	q := "insert into employees (name, username, password, level_id, created_at, updated_at, id_company) values ($1, $2, $3, $4, $5, $6, $7)"
+	_, err = d.db.Exec(q, data.CompleteName, data.Username, utils.HashPassword(data.Password), data.Level_Id, time.Now(), time.Now(), data.IdCompany)
 	if err != nil {
-		return err
+		return fmt.Errorf("erro ao inserir usuário: %w", err)
 	}
 
 	return nil
