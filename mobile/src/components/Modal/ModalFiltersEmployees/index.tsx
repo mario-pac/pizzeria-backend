@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Modal, View } from "react-native";
 
-import { Gets, Models } from "api/index";
+import { Models } from "api/index";
 import { useForm } from "react-hook-form";
 
 import Input from "components/Input";
 import Spacer from "components/Spacer";
-import Loading from "components/Loading";
 import SelectInput from "components/SelectInput";
-
-import { useMe } from "providers/user";
 
 import { useTheme } from "styled-components/native";
 import Title from "../Title";
@@ -18,6 +15,7 @@ interface Props {
   showModal: boolean;
   filter: Models.EmployeeListFilters;
   setFilter: (filter: Models.EmployeeListFilters) => void;
+  employeeLevels?: Models.EmployeeLevel[];
   closeModal?: () => void;
 }
 
@@ -26,42 +24,14 @@ const ModalFiltersEmployees: React.FC<Props> = ({
   filter,
   setFilter,
   closeModal,
+  employeeLevels,
 }) => {
   const theme = useTheme();
-  const me = useMe();
-  const [employeeLevels, setEmployeeLevels] = useState<Models.EmployeeLevel[]>(
-    []
-  );
-  const [loading, setLoading] = useState(false);
-
-  const getEmployeeLevels = async () => {
-    try {
-      setLoading(true);
-      const res = await Gets.listEmployeeLevels(
-        me.user!.token,
-        me.user!.idCompany
-      );
-      if (res) {
-        setEmployeeLevels(res);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getEmployeeLevels();
-  }, []);
-
-  if (loading) {
-    return <Loading overlap />;
-  }
 
   const form = useForm<Models.EmployeeLevel>();
 
   const employeeLevel = form.watch();
+
   return (
     <View>
       <Modal transparent={true} visible={showModal}>
@@ -70,8 +40,9 @@ const ModalFiltersEmployees: React.FC<Props> = ({
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            opacity: 0.4,
-            backgroundColor: "#242424",
+            opacity: 1,
+            backgroundColor: "#0000008f",
+            padding: 16,
           }}
         >
           <View
@@ -81,6 +52,7 @@ const ModalFiltersEmployees: React.FC<Props> = ({
               borderRadius: 10,
               alignItems: "center",
               justifyContent: "center",
+              width: "100%",
             }}
           >
             <Title title="Filtros:" closeModal={closeModal} />
@@ -94,7 +66,7 @@ const ModalFiltersEmployees: React.FC<Props> = ({
             <SelectInput
               label="Tipo Usuário"
               value={employeeLevel?.description}
-              items={employeeLevels}
+              items={employeeLevels ?? []}
               keyOfLabel="description"
               keyOfValue="id"
               onValueChange={(v) => {

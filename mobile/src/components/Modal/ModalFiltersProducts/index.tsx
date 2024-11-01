@@ -32,8 +32,9 @@ const ModalFiltersProducts: React.FC<Props> = ({
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            opacity: 0.4,
-            backgroundColor: "#242424",
+            opacity: 1,
+            backgroundColor: "#0000008f",
+            padding: 16,
           }}
         >
           <View
@@ -43,6 +44,7 @@ const ModalFiltersProducts: React.FC<Props> = ({
               borderRadius: 10,
               alignItems: "center",
               justifyContent: "center",
+              width: "100%",
             }}
           >
             <Title title="Filtros:" closeModal={closeModal} />

@@ -11,19 +11,19 @@ import * as S from "./styles";
 type Props = {
   order: Models.Order;
   onPress: (item: Models.Order) => void;
-  disabled?: boolean
+  disabled?: boolean;
 };
 
 const OrderCard: React.FC<Props> = ({ order, onPress, disabled }) => {
   const theme = useTheme();
 
   return (
-    <Shadows>
+    <Shadows width="auto" height="auto">
       <S.Container onPress={() => onPress(order)} enabled={!disabled}>
         <View
           style={{
-            width: 90,
-            height: "100%",
+            width: "25%",
+            paddingVertical: 76,
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: theme.colors.primary,
@@ -42,7 +42,14 @@ const OrderCard: React.FC<Props> = ({ order, onPress, disabled }) => {
           <S.Title numberOfLines={1} ellipsizeMode="tail">
             Pedido #{order.id}
           </S.Title>
-          <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <S.Subtitle bold>
               Responsável: <S.Subtitle>{order.employeeId}</S.Subtitle>
             </S.Subtitle>
@@ -50,7 +57,14 @@ const OrderCard: React.FC<Props> = ({ order, onPress, disabled }) => {
               Cliente: <S.Subtitle>{order.customerName}</S.Subtitle>
             </S.Subtitle>
           </View>
-          <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <S.Subtitle bold>
               Nº mesa: <S.Subtitle>{order.tableNumber}</S.Subtitle>
             </S.Subtitle>

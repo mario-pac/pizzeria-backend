@@ -6,5 +6,6 @@ export const Container = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   padding: 24px 16px;
-  gap: 16px;
+  gap: 10px;
+  justify-content: center;
 `;

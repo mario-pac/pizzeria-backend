@@ -12,7 +12,7 @@ import { View } from "react-native";
 interface Props {
   onAdd?: () => void;
   onGoBack?: () => void;
-  notToList?: boolean
+  notToList?: boolean;
 }
 
 const ProductsHeader: React.FC<Props> = ({ onAdd, onGoBack, notToList }) => {
@@ -21,26 +21,27 @@ const ProductsHeader: React.FC<Props> = ({ onAdd, onGoBack, notToList }) => {
 
   return (
     <HeaderContainer insetTop={insets.top}>
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: "row" }}>
         <Icon
           type="feather"
           name="arrow-left"
           size={30}
           right={false}
           onPress={onGoBack}
-          color={theme.colors.text.secondary}
+          color={theme.colors.text.primary}
         />
         <CText>Produtos</CText>
       </View>
-      {!notToList &&
+      {!notToList && (
         <Icon
           type="antdesign"
           name="plus"
           size={30}
           right={false}
           onPress={onAdd}
-          color={theme.colors.text.secondary}
-        />}
+          color={theme.colors.text.primary}
+        />
+      )}
     </HeaderContainer>
   );
 };

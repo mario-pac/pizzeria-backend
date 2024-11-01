@@ -29,9 +29,9 @@ export const StackRoutes: React.FC = () => {
   const theme = useTheme();
   const inset = useSafeAreaInsets();
 
-  const me = useMe()
+  const me = useMe();
 
-  const initialRoute: keyof RootStackParamList = me.user ? "Home" : 'Login';
+  const initialRoute: keyof RootStackParamList = me.user ? "Home" : "Login";
 
   return (
     <Stack.Navigator
@@ -40,7 +40,7 @@ export const StackRoutes: React.FC = () => {
         headerStyle: {
           backgroundColor: theme.colors.header.backgroundColor,
         },
-        headerTintColor: theme.colors.text.secondary,
+        headerTintColor: theme.colors.text.primary,
         headerShadowVisible: true,
         animation: "slide_from_right",
         contentStyle: {
@@ -62,7 +62,7 @@ export const StackRoutes: React.FC = () => {
       <Stack.Screen
         name="HomeSetting"
         component={HomeSetting}
-        options={{ headerTitle: 'Configurações' }}
+        options={{ headerTitle: "Configurações" }}
       />
       <Stack.Screen
         name="Settings"
@@ -92,12 +92,12 @@ export const StackRoutes: React.FC = () => {
       <Stack.Screen
         name="Employees"
         component={Employees}
-        options={{ headerShown: false }}
+        options={{ headerTitle: "Funcionários" }}
       />
       <Stack.Screen
         name="ItemList"
         component={ItemList}
-        options={{ headerTitle: 'Lista de Itens' }}
+        options={{ headerTitle: "Lista de Itens" }}
       />
       <Stack.Screen
         name="Products"
@@ -117,7 +117,7 @@ export const StackRoutes: React.FC = () => {
       <Stack.Screen
         name="FinishOrder"
         component={FinishOrder}
-        options={{ headerTitle: 'Finalizar pedido' }}
+        options={{ headerTitle: "Finalizar pedido" }}
       />
     </Stack.Navigator>
   );

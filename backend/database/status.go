@@ -19,14 +19,14 @@ func (d *DAO) ListStatus() ([]*models.Status, error) {
 }
 
 func (d *DAO) StatusById(id int64) (*models.Status, error) {
-	var status *models.Status
+	var status models.Status
 
 	q := "select * from status where id = $1"
 
-	err := d.db.Get(status, q, id)
+	err := d.db.Get(&status, q, id)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
 
-	return status, nil
+	return &status, nil
 }

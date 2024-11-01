@@ -31,10 +31,9 @@ const ModalFiltersOrders: React.FC<Props> = ({
 
   const me = useMe();
   const [statusList, setStatusList] = useState<Models.Status[]>([]);
-  const [status, setStatus] = useState<Models.Status>();
   const [loading, setLoading] = useState(false);
 
-  const getEmployeeLevels = async () => {
+  const getListStatuses = async () => {
     try {
       setLoading(true);
       const res = await Gets.listStatus(me.user!.token);
@@ -49,12 +48,8 @@ const ModalFiltersOrders: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    getEmployeeLevels();
+    getListStatuses();
   }, []);
-
-  if (loading) {
-    return <Loading overlap />;
-  }
 
   return (
     <View>
@@ -64,8 +59,9 @@ const ModalFiltersOrders: React.FC<Props> = ({
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            opacity: 0.4,
-            backgroundColor: "#242424",
+            opacity: 1,
+            backgroundColor: "#0000008f",
+            padding: 16,
           }}
         >
           <View
@@ -75,6 +71,7 @@ const ModalFiltersOrders: React.FC<Props> = ({
               borderRadius: 10,
               alignItems: "center",
               justifyContent: "center",
+              width: "100%",
             }}
           >
             <Title title="Filtros:" closeModal={closeModal} />
@@ -87,20 +84,27 @@ const ModalFiltersOrders: React.FC<Props> = ({
               }
             />
             <Spacer height={6} />
-            <SelectInput<Models.Status>
-              label="Status"
-              value={status?.description}
-              items={statusList}
-              keyOfLabel="description"
-              keyOfValue="id"
-              onValueChange={(v) => {
-                if (v) {
-                  setFilter({ ...filter, idStatus: v.id });
-                  setStatus(v);
+            {loading ? (
+              <Loading />
+            ) : (
+              <SelectInput<Models.Status>
+                label="Status"
+                value={
+                  statusList.find((st) => st.id === filter.idStatus)
+                    ?.description
                 }
-              }}
-              placeholder="Selecione uma opção..."
-            />
+                items={statusList}
+                keyOfLabel="description"
+                keyOfValue="id"
+                onValueChange={(v) => {
+                  console.warn(v);
+                  if (v) {
+                    setFilter({ ...filter, idStatus: v.id });
+                  }
+                }}
+                placeholder="Selecione uma opção..."
+              />
+            )}
             <Spacer height={6} />
             <DateInput
               date={filter.createdAtInit}
@@ -108,6 +112,7 @@ const ModalFiltersOrders: React.FC<Props> = ({
                 setFilter({ ...filter, createdAtInit })
               }
               label="Iniciados em"
+              width={100}
             />
             <Spacer height={6} />
             <DateInput
@@ -116,6 +121,7 @@ const ModalFiltersOrders: React.FC<Props> = ({
                 setFilter({ ...filter, createdAtFinal })
               }
               label="Iniciados até"
+              width={100}
             />
           </View>
         </View>

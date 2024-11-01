@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -101,6 +102,10 @@ func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 	err := d.db.Get(&order, q, id)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
+	}
+
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+		return nil, fmt.Errorf("pedido não encontrado")
 	}
 
 	orderItems, err = d.OrderItemsByIdOrder(order.Id)

@@ -13,8 +13,7 @@ export const Container = styled(RectButton)`
 `;
 
 export const Content = styled.View`
-  flex: 1;
-  height: 100%;
+  width: 75%;
   padding: 8px;
   justify-content: space-around;
   background-color: ${({ theme }) => theme.colors.card};

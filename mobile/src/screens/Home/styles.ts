@@ -30,7 +30,7 @@ export const Title = styled.Text`
   font-family: ${(p) => p.theme.fonts.semibold};
   font-size: ${RFValue(24)}px;
   line-height: ${RFValue(28)}px;
-  color: ${(p) => p.theme.colors.text.secondary};
+  color: ${(p) => p.theme.colors.text.primary};
   text-align: center;
 `;
 
@@ -39,5 +39,5 @@ export const User = styled.Text<{ semibold?: boolean }>`
     p.semibold ? p.theme.fonts.semibold : p.theme.fonts.medium};
   font-size: ${RFValue(15)}px;
   line-height: ${RFValue(24)}px;
-  color: ${(p) => p.theme.colors.text.secondary};
+  color: ${(p) => p.theme.colors.text.primary};
 `;

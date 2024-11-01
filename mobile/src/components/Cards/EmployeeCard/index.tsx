@@ -18,12 +18,12 @@ const EmployeeCard: React.FC<Props> = ({ employee, onPress }) => {
   const theme = useTheme();
 
   return (
-    <Shadows>
+    <Shadows width="auto" height="auto">
       <S.Container onPress={onPress}>
         <View
           style={{
-            width: 90,
-            height: "100%",
+            width: "25%",
+            padding: 18,
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: theme.colors.primary,
@@ -51,8 +51,8 @@ const EmployeeCard: React.FC<Props> = ({ employee, onPress }) => {
               {employee.levelId === 3
                 ? "Administrador"
                 : employee.levelId === 1
-                  ? "Cozinheiro"
-                  : "Garçom"}
+                ? "Cozinheiro"
+                : "Garçom"}
             </S.Subtitle>
           </S.Subtitle>
         </S.Content>

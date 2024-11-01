@@ -29,17 +29,17 @@ function SelectInput<T>({
   placeholder,
   items,
   keyOfLabel,
-  keyOfValue
+  keyOfValue,
 }: SelectInputProps<T>) {
   const theme = useTheme();
 
-  const its: Item[] = []
+  const its: Item[] = [];
 
   for (const item of items) {
     its.push({
       label: item[keyOfLabel] as string,
-      value: item[keyOfValue] as string
-    })
+      value: item[keyOfValue] as string,
+    });
   }
 
   return (
@@ -64,6 +64,6 @@ function SelectInput<T>({
       </View>
     </S.Container>
   );
-};
+}
 
 export default SelectInput;

@@ -141,6 +141,11 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               icon={{ name: "gears", type: "fontAwesome", size: 24 }}
               onPress={() => navigation.navigate("Settings")}
             />
+            <OptionsCard
+              name="Novo Pedido"
+              icon={{ name: "plus", type: "fontAwesome", size: 24 }}
+              onPress={() => navigation.navigate("Desks", { newDesk: true })}
+            />
           </>
         ) : undefined}
       </S.Container>

@@ -17,6 +17,7 @@ import { showToast } from "utils/toast";
 
 import OrderHeader from "headers/OrderHeader";
 import * as S from "./styles";
+import { AxiosError } from "axios";
 
 const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
   const {
@@ -34,8 +35,11 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
   const init = useCallback(async () => {
     try {
       setLoading(true);
+      console.warn("get in");
       if (route.params?.id) {
+        console.warn(route.params.id);
         const ord = await Gets.orderById(me.user!.token, route.params.id);
+        console.warn(ord);
         setOrder(ord.self);
         if (ord.orderItems) {
           updateCart(ord.orderItems);
@@ -56,7 +60,8 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
         });
       }
     } catch (error) {
-      showToast("error", (error as Error).message);
+      console.error(error);
+      showToast("error", (error as AxiosError).response?.data as string);
     } finally {
       setLoading(false);
     }
@@ -64,7 +69,7 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
 
   useEffect(() => {
     init();
-  }, [init]);
+  }, []);
 
   const onGoBack = async () => {
     try {
@@ -86,7 +91,10 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
         navigation.goBack();
       }
     } catch (error) {
+      console.error(error);
       showToast("error", (error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -164,7 +172,7 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
             onPress={() => navigation.navigate("FinishOrder")}
           />
           <Spacer height={16} />
-          <Button value="Sair" outline />
+          <Button value="Sair" outline onPress={openExitModal} />
         </S.Footer>
       </S.Container>
     </>

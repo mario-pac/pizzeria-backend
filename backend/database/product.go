@@ -71,12 +71,14 @@ func (d *DAO) DeleteProduct(id int64) error {
 }
 
 func (d *DAO) ProductById(id int64) (*models.Product, error) {
-	var product *models.Product
-	q := "select * from products where id = $1"
+	var product models.Product
+	q := `select
+	 		id, id_company, description, price, category, created_at, updated_at from products
+		where id = $1`
 	err := d.db.Get(&product, q, id)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
 
-	return product, nil
+	return &product, nil
 }

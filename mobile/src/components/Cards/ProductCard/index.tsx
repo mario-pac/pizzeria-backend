@@ -17,12 +17,12 @@ const ProductCard: React.FC<Props> = ({ product, onPress }) => {
   const theme = useTheme();
 
   return (
-    <Shadows>
+    <Shadows width="auto" height="auto">
       <S.Container onPress={onPress}>
         <View
           style={{
-            width: 90,
-            height: "100%",
+            width: "25%",
+            paddingVertical: 18,
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: theme.colors.primary,

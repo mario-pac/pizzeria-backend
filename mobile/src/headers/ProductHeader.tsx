@@ -28,7 +28,7 @@ const ProductHeader: React.FC<Props> = ({ id, onGoBack }) => {
         size={24}
         right={false}
         onPress={onGoBack}
-        color={theme.colors.text.secondary}
+        color={theme.colors.text.primary}
       />
       <CText>{!!id ? "Produto #" + id : "Novo Produto"} </CText>
     </HeaderContainer>

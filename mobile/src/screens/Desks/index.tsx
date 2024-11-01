@@ -104,6 +104,7 @@ const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
             }
           }}
           onError={onError}
+          key={item + 90}
         />
       ))}
     </S.Container>

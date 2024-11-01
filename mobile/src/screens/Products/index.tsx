@@ -13,6 +13,7 @@ import { useConfigs } from "providers/config";
 
 import ProductsHeader from "headers/ProductsHeader";
 import * as S from "./styles";
+import Button from "components/Button";
 
 const Products: React.FC<ScreenBaseProps<"Products">> = ({
   navigation,
@@ -46,11 +47,7 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({
 
   useEffect(() => {
     getProducts();
-  }, [getProducts]);
-
-  if (loading) {
-    return <Loading overlap />;
-  }
+  }, []);
 
   const notToList = route.params?.notToList ?? false;
 
@@ -68,18 +65,29 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({
           showModal={showModal}
           closeModal={() => setShowModal(false)}
         />
-        <FlatList
-          data={products}
-          renderItem={({ item }) => (
-            <ProductCard
-              product={item}
-              onPress={() =>
-                navigation.navigate("ProductForm", { id: item.id, notToList })
-              }
-            />
-          )}
-          style={{ paddingHorizontal: 24, paddingVertical: 16 }}
-        />
+        {loading ? (
+          <Loading />
+        ) : (
+          <FlatList
+            data={products}
+            ListHeaderComponent={
+              <Button value="Ver filtros" onPress={() => setShowModal(true)} />
+            }
+            renderItem={({ item }) => (
+              <ProductCard
+                product={item}
+                onPress={() =>
+                  navigation.navigate("ProductForm", { id: item.id, notToList })
+                }
+              />
+            )}
+            contentContainerStyle={{
+              paddingHorizontal: 24,
+              paddingVertical: 16,
+              gap: 16,
+            }}
+          />
+        )}
       </S.Container>
     </>
   );

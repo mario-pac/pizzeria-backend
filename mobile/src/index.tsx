@@ -54,7 +54,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
-        <StatusBar style="dark" backgroundColor="transparent" />
+        <StatusBar style="light" backgroundColor="transparent" />
         <SafeAreaProvider>
           <ConfigProvider>
             <UserProvider>

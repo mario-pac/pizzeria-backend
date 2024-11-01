@@ -42,7 +42,7 @@ export const TextInput = styled.TextInput.attrs({
 
     elevation: 1,
   },
-}) <ContentProps>`
+})<ContentProps>`
   width: 100%;
   height: ${({ observation }) => (observation ? 67 : 46)}px;
   text-align: center;
@@ -57,10 +57,10 @@ export const TextInput = styled.TextInput.attrs({
       : theme.colors.input.backgroundColor};
   font-family: ${({ theme }) => theme.fonts.regular};
   font-size: ${RFValue(13)}px;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.input.text};
 `;
 
-export const IconWrapper = styled.View<{ position?: 'right' | 'left' }>`
+export const IconWrapper = styled.View<{ position?: "right" | "left" }>`
   flex: 1;
   position: absolute;
   ${({ position }) => `${position}: 12px`}

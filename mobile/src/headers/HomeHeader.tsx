@@ -23,7 +23,7 @@ const HomeHeader: React.FC<Props> = ({ onExit }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
-  const { user } = useMe()
+  const { user } = useMe();
 
   //Intercept back button behavior
   useFocusEffect(
@@ -79,7 +79,7 @@ const HomeHeader: React.FC<Props> = ({ onExit }) => {
             name="power-off"
             size={26}
             right={false}
-            color={theme.colors.text.secondary}
+            color={theme.colors.text.primary}
             onPress={openExitModal}
           />
         </View>

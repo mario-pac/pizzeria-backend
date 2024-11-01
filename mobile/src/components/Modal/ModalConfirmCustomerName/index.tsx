@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import { Modal, View } from "react-native";
 
 import Button from "components/Button";
-import { useTheme } from "styled-components";
+import { useTheme } from "styled-components/native";
 import Input from "components/Input";
 
 interface Props {
   showModal: boolean;
   onClose?: (value: string) => void;
-  closeModal?: () => void;
+  closeModal: () => void;
 }
 
-const ModalConfirmCustomerName: React.FC<Props> = ({ showModal, onClose }) => {
+const ModalConfirmCustomerName: React.FC<Props> = ({
+  showModal,
+  onClose,
+  closeModal,
+}) => {
   const theme = useTheme();
   const [value, setValue] = useState("");
   return (
@@ -22,8 +26,9 @@ const ModalConfirmCustomerName: React.FC<Props> = ({ showModal, onClose }) => {
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            opacity: 0.4,
-            backgroundColor: "#242424",
+            opacity: 1,
+            backgroundColor: "#0000008f",
+            padding: 16,
           }}
         >
           <View
@@ -33,6 +38,8 @@ const ModalConfirmCustomerName: React.FC<Props> = ({ showModal, onClose }) => {
               borderRadius: 10,
               alignItems: "center",
               justifyContent: "center",
+              width: "100%",
+              gap: 10,
             }}
           >
             <Input
@@ -41,10 +48,14 @@ const ModalConfirmCustomerName: React.FC<Props> = ({ showModal, onClose }) => {
               onChangeText={setValue}
             />
             <Button
-              value="Fechar"
-              onPress={() => onClose && onClose(value)}
-              color={theme.colors.status.error}
+              value="Confirmar"
+              onPress={() => {
+                console.warn(onClose);
+                onClose && onClose(value);
+                closeModal();
+              }}
             />
+            <Button outline value="Cancelar" onPress={closeModal} />
           </View>
         </View>
       </Modal>

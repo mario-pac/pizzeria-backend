@@ -13,6 +13,7 @@ import { useConfigs } from "providers/config";
 import { Gets, Models } from "api/index";
 
 import * as S from "./styles";
+import Button from "components/Button";
 
 const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -44,11 +45,7 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
 
   useEffect(() => {
     getOrders();
-  }, [getOrders]);
-
-  if (loading) {
-    return <Loading overlap />;
-  }
+  }, []);
 
   return (
     <S.Container>
@@ -58,16 +55,27 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
         showModal={showModal}
         closeModal={() => setShowModal(false)}
       />
-      <FlatList
-        data={orders}
-        renderItem={({ item }) => (
-          <OrderCard
-            order={item}
-            onPress={(it) => navigation.navigate("Order", { id: it.id })}
-          />
-        )}
-        style={{ paddingHorizontal: 24, paddingVertical: 16 }}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={orders}
+          ListHeaderComponent={
+            <Button value="Ver filtros" onPress={() => setShowModal(true)} />
+          }
+          renderItem={({ item }) => (
+            <OrderCard
+              order={item}
+              onPress={(it) => navigation.navigate("Order", { id: it.id })}
+            />
+          )}
+          contentContainerStyle={{
+            paddingHorizontal: 24,
+            paddingVertical: 16,
+            gap: 16,
+          }}
+        />
+      )}
     </S.Container>
   );
 };

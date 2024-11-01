@@ -20,21 +20,19 @@ const OrderHeader: React.FC<Props> = ({ id, onGoBack, onAdd }) => {
   const insets = useSafeAreaInsets();
 
   return (
-    <HeaderContainer
-      insetTop={insets.top}
-    >
-      <View style={{ flexDirection: 'row' }}>
+    <HeaderContainer insetTop={insets.top}>
+      <View style={{ flexDirection: "row" }}>
         <Icon
           type="feather"
           name="arrow-left"
           size={30}
           right={false}
           onPress={onGoBack}
-          color={theme.colors.text.secondary}
+          color={theme.colors.text.primary}
         />
         <CText>{!!id ? "Pedido #" + id : "Novo Pedido"} </CText>
       </View>
-      <TouchableOpacity style={{ flexDirection: 'row' }} onPress={onAdd}>
+      <TouchableOpacity style={{ flexDirection: "row" }} onPress={onAdd}>
         <CText>Adicionar Produto </CText>
         <Icon
           type="antdesign"
@@ -42,7 +40,7 @@ const OrderHeader: React.FC<Props> = ({ id, onGoBack, onAdd }) => {
           size={30}
           disabled
           right={false}
-          color={theme.colors.text.secondary}
+          color={theme.colors.text.primary}
         />
       </TouchableOpacity>
     </HeaderContainer>

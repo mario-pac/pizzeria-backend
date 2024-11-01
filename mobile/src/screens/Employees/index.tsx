@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
+import Icon from "components/Icon";
 import Loading from "components/Loading";
 import EmployeeCard from "components/Cards/EmployeeCard";
 import ModalFiltersEmployees from "components/Modal/ModalFiltersEmployees";
@@ -14,10 +15,13 @@ import { useConfigs } from "providers/config";
 import { isAxiosError } from "axios";
 import { Gets, Models } from "api/index";
 
-import EmployeesHeader from "headers/EmployeesHeader";
+import { useTheme } from "styled-components/native";
 import * as S from "./styles";
+import Button from "components/Button";
 
 const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
+  const theme = useTheme();
+
   const [loading, setLoading] = useState(false);
 
   const me = useMe();
@@ -30,9 +34,12 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
   });
 
   const [employees, setEmployees] = useState<Models.Employee[]>([]);
+  const [employeeLevels, setEmployeeLevels] = useState<Models.EmployeeLevel[]>(
+    []
+  );
   const [showModal, setShowModal] = useState(false);
 
-  const getEmployees = useCallback(async () => {
+  const getEmployees = async () => {
     try {
       setLoading(true);
       const response = await Gets.listEmployees(me.user!.token, filter);
@@ -46,31 +53,62 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  };
+
+  const getEmployeeLevels = async () => {
+    try {
+      setLoading(true);
+      const res = await Gets.listEmployeeLevels(
+        me.user!.token,
+        me.user!.idCompany
+      );
+      if (res) {
+        setEmployeeLevels(res);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     getEmployees();
-  }, [getEmployees]);
+    getEmployeeLevels();
+  }, [filter]);
 
-  if (loading) {
-    return <Loading overlap />;
-  }
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Icon
+          type="antdesign"
+          name="plus"
+          size={30}
+          onPress={() => navigation.navigate("EmployeeForm")}
+          right={false}
+          color={theme.colors.text.primary}
+        />
+      ),
+    });
+  }, [navigation]);
 
   return (
-    <>
-      <EmployeesHeader
-        onGoBack={navigation.goBack}
-        onAdd={() => navigation.navigate("EmployeeForm")}
+    <S.Container>
+      <ModalFiltersEmployees
+        filter={filter}
+        setFilter={setFilter}
+        showModal={showModal}
+        employeeLevels={employeeLevels}
+        closeModal={() => setShowModal(false)}
       />
-      <S.Container>
-        <ModalFiltersEmployees
-          filter={filter}
-          setFilter={setFilter}
-          showModal={showModal}
-          closeModal={() => setShowModal(false)}
-        />
+      {loading ? (
+        <Loading />
+      ) : (
         <FlatList<Models.Employee>
           data={employees}
+          ListHeaderComponent={
+            <Button value="Ver filtros" onPress={() => setShowModal(true)} />
+          }
           renderItem={({ item }) => (
             <EmployeeCard
               employee={item}
@@ -79,10 +117,15 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
               }
             />
           )}
-          style={{ paddingHorizontal: 24, paddingVertical: 16 }}
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingHorizontal: 24,
+            paddingVertical: 16,
+            gap: 16,
+          }}
         />
-      </S.Container>
-    </>
+      )}
+    </S.Container>
   );
 };
 

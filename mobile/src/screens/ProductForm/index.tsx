@@ -36,15 +36,19 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
 
   const callback = useCallback(async () => {
     try {
+      setLoading(true);
       const id = route.params?.id;
       if (id && me.user?.token) {
         const prod = await Gets.productById(me.user.token, id);
+        console.log(prod);
         if (prod) {
           setFormValues(prod);
         }
       }
     } catch (error) {
       showToast("error", "Erro ao buscar produto: " + (error as Error).message);
+    } finally {
+      setLoading(false);
     }
   }, [route.params]);
 
@@ -61,7 +65,7 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
   useFocusEffect(
     useCallback(() => {
       callback();
-    }, [callback])
+    }, [])
   );
 
   const notToList = route.params?.notToList ?? false;
@@ -150,7 +154,7 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
               <Input label="Observações" observation />
             </>
           )}
-          <Spacer height={notToList ? 260 : 470} />
+          <Spacer height={36} />
           <S.Footer>
             {notToList ? (
               <Button value="Adicionar" onPress={() => onAdd(product)} />
@@ -158,7 +162,11 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
               <Button value="Confirmar" onPress={onPress} />
             )}
             <Spacer height={12} />
-            <Button value="Cancelar" outline />
+            <Button
+              value="Cancelar"
+              outline
+              onPress={() => navigation.goBack()}
+            />
           </S.Footer>
         </ScrollView>
       </S.Container>
