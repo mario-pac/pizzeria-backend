@@ -2,9 +2,11 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"go/pizzeria-backend/models"
 	"go/pizzeria-backend/utils"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -64,7 +66,7 @@ func (s *Service) HandleListOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string][]*models.Order{"data": orders}
+	response := map[string][]*models.OrderResponse{"data": orders}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
@@ -108,6 +110,9 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	val := s.GetTotalValueOrder(order.OrderItems)
+	order.Self.TotalValue = val
+
 	id, err := s.db.InsertOrder(order.Self)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -115,8 +120,15 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, item := range order.OrderItems {
-		item.Self.OrderID = id
-		s.db.InsertOrderItem(item.Self)
+		if item != nil {
+			item.Self.OrderID = id
+			err := s.db.InsertOrderItem(item.Self)
+			if err != nil {
+				log.Println(fmt.Errorf("erro ao inserir o item: %v", err))
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+		}
 	}
 
 	response := map[string]string{"message": "Pedido adicionado com sucesso!"}
@@ -163,6 +175,11 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	val := s.GetTotalValueOrder(order.OrderItems)
+	if order.Self.IdStatus != 6 {
+		order.Self.TotalValue = val
+	}
+
 	err = s.db.UpdateOrder(order.Self)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -176,16 +193,27 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, item := range order.OrderItems {
+		item.Self.OrderID = order.Self.Id
 		hasItem, err := s.db.OrderItemById(item.Self.Id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if hasItem != nil {
-			s.db.UpdateOrderItem(item.Self)
+		if hasItem != nil && hasItem.Self.Id > 0 {
+			err := s.db.UpdateOrderItem(item.Self)
+			if err != nil {
+				log.Println(fmt.Errorf("erro ao atualizar o item: %v", err))
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
 			continue
 		}
-		s.db.InsertOrderItem(item.Self)
+		err = s.db.InsertOrderItem(item.Self)
+		if err != nil {
+			log.Println(fmt.Errorf("erro ao inserir o item: %v", err))
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 	}
 
 	response := map[string]string{"message": "Pedido atualizado com sucesso!"}
@@ -281,4 +309,20 @@ func (s *Service) HandleGetUsedTables(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+
+func (s *Service) GetTotalValueOrder(oi []*models.OrderItemResponse) float64 {
+	var i float64
+
+	for _, r := range oi {
+		if r != nil && r.Self.Quantity > 0 && r.Self.ProductID > 0 {
+			prd, err := s.db.ProductById(r.Self.ProductID)
+			if err != nil || prd == nil {
+				continue
+			}
+			i += (prd.Price * float64(r.Self.Quantity))
+		}
+	}
+
+	return i
 }

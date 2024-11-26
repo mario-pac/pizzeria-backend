@@ -20,7 +20,7 @@ func (s *Service) HandleConfigByIDCompany(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	cfg, err := s.db.ConfigByIdCompany(int64(idCompany))
+	cfg, err := s.db.ConfigByIdCompany(idCompany)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -32,7 +32,7 @@ func (s *Service) HandleConfigByIDCompany(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(response)
 }
 
-func (s *Service) HandleListUsedDesks(w http.ResponseWriter, r *http.Request){
+func (s *Service) HandleListUsedDesks(w http.ResponseWriter, r *http.Request) {
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -45,7 +45,7 @@ func (s *Service) HandleListUsedDesks(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	usedTables, err := s.db.ListUsedTables(int64(idCompany))
+	usedTables, err := s.db.ListUsedTables(idCompany)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

@@ -42,7 +42,7 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
   const handleLogout = async () => {
     setUser(undefined);
     await removeUser();
-    navigation.navigate("Login");
+    navigation.replace("Login");
   };
 
   return (
@@ -140,11 +140,6 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               name="Configurações"
               icon={{ name: "gears", type: "fontAwesome", size: 24 }}
               onPress={() => navigation.navigate("Settings")}
-            />
-            <OptionsCard
-              name="Novo Pedido"
-              icon={{ name: "plus", type: "fontAwesome", size: 24 }}
-              onPress={() => navigation.navigate("Desks", { newDesk: true })}
             />
           </>
         ) : undefined}

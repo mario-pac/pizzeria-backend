@@ -32,7 +32,7 @@ func (s *Service) RouteDefault(w http.ResponseWriter, r *http.Request) {
 func (s *Service) Listen() {
 	hasUsr, _ := s.db.UserByUsername("admin")
 
-	if hasUsr == false {
+	if !hasUsr {
 		err := s.CreateDefaultUser()
 		if err != nil {
 			log.Fatalf("Erro ao criar o user default(admin): %v", err)
@@ -74,7 +74,7 @@ func (s *Service) Listen() {
 	router.HandleFunc("/updateOrderItem", s.HandleUpdateOrderItem).Methods("PUT")                     //ok
 	router.HandleFunc("/removeOrderItem", s.HandleRemoveOrderItem).Methods("DELETE")                  //ok
 	router.HandleFunc("/orderItemById", s.HandleOrderItemByID).Methods("GET")                         //ok
-	router.HandleFunc("/orderItemsByIdOrder", s.HandleOrderItemByIdStatus).Methods("GET")             //ok
+	router.HandleFunc("/orderItemsByIdStatus", s.HandleOrderItemByIdStatus).Methods("GET")            //ok
 	router.HandleFunc("/getNextSequenceOrderItem", s.HandleGetNextSequenceIdOrderItem).Methods("GET") //ok
 	//employee levels
 	router.HandleFunc("/listEmployeeLevels", s.HandleListEmployeeLevels).Methods("GET") //ok

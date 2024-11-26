@@ -36,7 +36,9 @@ const ModalFiltersOrders: React.FC<Props> = ({
   const getListStatuses = async () => {
     try {
       setLoading(true);
-      const res = await Gets.listStatus(me.user!.token);
+      const res = (await Gets.listStatus(me.user!.token)).filter(
+        (status) => status.id >= 4
+      );
       if (res) {
         setStatusList(res);
       }
@@ -50,6 +52,9 @@ const ModalFiltersOrders: React.FC<Props> = ({
   useEffect(() => {
     getListStatuses();
   }, []);
+
+  const value =
+    statusList.find((st) => st.id === filter.idStatus)?.description ?? "";
 
   return (
     <View>
@@ -87,19 +92,15 @@ const ModalFiltersOrders: React.FC<Props> = ({
             {loading ? (
               <Loading />
             ) : (
-              <SelectInput<Models.Status>
+              <SelectInput
                 label="Status"
-                value={
-                  statusList.find((st) => st.id === filter.idStatus)
-                    ?.description
-                }
+                value={value}
                 items={statusList}
                 keyOfLabel="description"
                 keyOfValue="id"
                 onValueChange={(v) => {
-                  console.warn(v);
                   if (v) {
-                    setFilter({ ...filter, idStatus: v.id });
+                    setFilter({ ...filter, idStatus: v });
                   }
                 }}
                 placeholder="Selecione uma opção..."

@@ -7,13 +7,13 @@ interface CartProps {
 
 interface CartData {
   order: Models.Order | undefined;
-  items: Models.OrderItem[];
+  items: Models.OrderItemResponse[];
   itemsDeleted: number[];
   addItemDeleted: (item: number) => void;
-  addToCart: (item: Models.OrderItem) => void;
-  removeFromCart: (item: Models.OrderItem) => void;
-  updateItemCart: (item: Models.OrderItem) => void;
-  updateCart: (products: Models.OrderItem[]) => void;
+  addToCart: (item: Models.OrderItemResponse) => void;
+  removeFromCart: (item: Models.OrderItemResponse) => void;
+  updateItemCart: (item: Models.OrderItemResponse) => void;
+  updateCart: (products: Models.OrderItemResponse[]) => void;
   setOrder: (order: Models.Order | undefined) => void;
   cleanCart: () => void;
 }
@@ -21,12 +21,12 @@ interface CartData {
 const CartContext = createContext({} as CartData);
 
 const CartProvider: React.FC<CartProps> = ({ children }) => {
-  const [items, setItems] = useState<Models.OrderItem[]>([]);
+  const [items, setItems] = useState<Models.OrderItemResponse[]>([]);
   const [itemsDeleted, setItemsDeleted] = useState<number[]>([]);
 
   const [order, setOrder] = useState<Models.Order | undefined>();
 
-  const addToCart = (item: Models.OrderItem) => {
+  const addToCart = (item: Models.OrderItemResponse) => {
     setItems([...items, item]);
   };
 
@@ -34,21 +34,21 @@ const CartProvider: React.FC<CartProps> = ({ children }) => {
     setItemsDeleted([...itemsDeleted, item]);
   };
 
-  const updateItemCart = (item: Models.OrderItem) => {
+  const updateItemCart = (item: Models.OrderItemResponse) => {
     const newItemsCart = items.filter(
-      (cartItem) => cartItem.productId !== item.productId
+      (cartItem) => cartItem.self.productId !== item.self.productId
     );
     setItems([...newItemsCart, item]);
   };
 
-  const removeFromCart = (item: Models.OrderItem) => {
+  const removeFromCart = (item: Models.OrderItemResponse) => {
     const newItemsCart = items.filter(
-      (cartItem) => cartItem.productId !== item.productId
+      (cartItem) => cartItem.self.productId !== item.self.productId
     );
     setItems(newItemsCart);
   };
 
-  const updateCart = (cartItems: Models.OrderItem[]) => {
+  const updateCart = (cartItems: Models.OrderItemResponse[]) => {
     setItems(cartItems);
   };
 

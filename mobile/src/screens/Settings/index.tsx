@@ -78,7 +78,7 @@ const Settings: React.FC<ScreenBaseProps<"Settings">> = ({ navigation }) => {
         keyboardType="numeric"
       />
       <S.Footer>
-        <Button value="Salvar alterações" onPress={onSave} />
+        <Button value="Salvar alterações" onPress={onSave} width="100%" />
       </S.Footer>
     </S.Container>
   );

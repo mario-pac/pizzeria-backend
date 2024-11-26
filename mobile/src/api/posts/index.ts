@@ -103,7 +103,11 @@ export const handleInsertOrder = async (
 ) => {
   const backendUrl = await getBackendUrl();
   const body = JSON.stringify({
-    order,
+    self: order.self,
+    orderItems: order.orderItems,
+    status: order.status,
+    employeeName: order.employeeName,
+    itemsDeleted: [],
   });
 
   return await new Promise<{ message: string }>((resolve, reject) => {

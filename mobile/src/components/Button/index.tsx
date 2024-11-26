@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = (props) => {
       width={props.width}
       outline={props.outline}
       onPress={props.onPress}
-      enabled={!props.disabled}
+      disabled={props.disabled}
       color={props.color}
     >
       <S.BorderWrapper outline={props.outline} color={props.color}>

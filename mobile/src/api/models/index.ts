@@ -39,6 +39,7 @@ export interface OrderItem {
 export interface OrderItemResponse {
   self: OrderItem;
   status?: Status;
+  description: string;
 }
 
 export interface Order {
@@ -57,9 +58,10 @@ export interface Order {
 
 export interface OrderResponse {
   self: Order;
-  orderItems?: OrderItem[];
+  orderItems?: OrderItemResponse[];
   status?: Status;
   itemsDeleted?: number[];
+  employeeName: string;
 }
 
 export interface Product {

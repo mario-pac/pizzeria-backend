@@ -62,9 +62,9 @@ export const listOrders = async (
   filter: Models.OrderListFilters
 ) => {
   const backendUrl = await getBackendUrl();
-  return await new Promise<Models.Order[]>((resolve, reject) => {
+  return await new Promise<Models.OrderResponse[]>((resolve, reject) => {
     axios
-      .get(backendUrl + "/listEmployees", {
+      .get(backendUrl + "/listOrders", {
         headers: {
           Authorization: token,
           customerName: filter.customerName ?? "",
@@ -154,7 +154,7 @@ export const listUsedDesks = async (token: string, idCompany: number) => {
       .get(backendUrl + "/listUsedDesks", {
         headers: {
           Authorization: token,
-          idCompany: idCompany ?? "",
+          idCompany: idCompany ?? 1,
         },
       })
       .then(({ data }) => {
@@ -178,7 +178,7 @@ export const companyById = async (token: string, id: number) => {
       .get(backendUrl + "/companyById", {
         headers: {
           Authorization: token,
-          idCompany: id ?? "",
+          idCompany: id ?? 1,
         },
       })
       .then(({ data }) => {
@@ -265,7 +265,7 @@ export const orderItemByIdsStatus = async (
   const backendUrl = await getBackendUrl();
   return await new Promise<Models.OrderItemResponse[]>((resolve, reject) => {
     axios
-      .get(backendUrl + "/orderById", {
+      .get(backendUrl + "/orderItemsByIdStatus", {
         headers: {
           Authorization: token,
           ids: idsStatus ?? [],
@@ -276,7 +276,7 @@ export const orderItemByIdsStatus = async (
       })
       .catch((error) => {
         reject(
-          "Erro ao buscar itens pelo id do pedido:" +
+          "Erro ao buscar itens pelo status:" +
             (error as AxiosError).response?.data
         );
       });

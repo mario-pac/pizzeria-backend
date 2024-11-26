@@ -7,6 +7,7 @@ export const Container = styled.View`
 
 export const Footer = styled.View`
   flex: 1;
+  padding-top: 36px;
   align-items: center;
   justify-content: flex-end;
 `;

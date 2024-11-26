@@ -31,6 +31,7 @@ const FinishOrder: React.FC<ScreenBaseProps<"FinishOrder">> = ({
             idStatus: 5,
           },
           orderItems: items,
+          employeeName: me.user?.name ?? "",
           itemsDeleted,
         });
         cleanCart();
@@ -79,7 +80,7 @@ const FinishOrder: React.FC<ScreenBaseProps<"FinishOrder">> = ({
         keyOfValue="value"
         onValueChange={(v) => {
           if (v) {
-            setOrder({ ...order!, paymentMethod: v.value });
+            setOrder({ ...order!, paymentMethod: v });
             return;
           }
           setOrder({ ...order!, paymentMethod: "" });

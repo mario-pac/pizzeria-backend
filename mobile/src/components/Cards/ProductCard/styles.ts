@@ -10,13 +10,13 @@ export const Container = styled(RectButton)`
   justify-content: center;
   border-radius: 16px;
   overflow: hidden;
+  background-color: ${({ theme }) => theme.colors.card};
 `;
 
 export const Content = styled.View`
   width: 75%;
   padding: 8px;
   justify-content: space-around;
-  background-color: ${({ theme }) => theme.colors.card};
 `;
 
 export const Title = styled.Text`

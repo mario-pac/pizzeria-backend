@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 
 import Loading from "components/Loading";
 import OrderCard from "components/Cards/OrderCard";
@@ -10,10 +10,13 @@ import { ScreenBaseProps } from "utils/index";
 import { useMe } from "providers/user";
 import { useConfigs } from "providers/config";
 
-import { Gets, Models } from "api/index";
+import { Gets, Models, Puts } from "api/index";
 
 import * as S from "./styles";
 import Button from "components/Button";
+import { log } from "../../log";
+import { useFocusEffect } from "@react-navigation/native";
+import { showToast } from "utils/toast";
 
 const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -26,10 +29,10 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
     employeeId: me.user!.id,
   });
 
-  const [orders, setOrders] = useState<Models.Order[]>([]);
+  const [orders, setOrders] = useState<Models.OrderResponse[]>([]);
   const [showModal, setShowModal] = useState(false);
 
-  const getOrders = useCallback(async () => {
+  const getOrders = async () => {
     try {
       setLoading(true);
       const response = await Gets.listOrders(me.user!.token, filter);
@@ -37,15 +40,54 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
         setOrders(response);
       }
     } catch (error) {
-      console.log(error);
+      log.debug(error);
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  };
 
-  useEffect(() => {
-    getOrders();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getOrders();
+    }, [filter])
+  );
+
+  const handleConfirmPayment = async (or: Models.Order) => {
+    try {
+      setLoading(true);
+      await Puts.handleUpdateOrder(me!.user?.token ?? "", {
+        self: { ...or, idStatus: 6 },
+        employeeName: me.user?.name ?? "",
+        itemsDeleted: [],
+        orderItems: [],
+      });
+      showToast("success", "Pedido finalizado com sucesso!");
+    } catch (error) {
+      showToast("error", (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onPressCard = (or: Models.Order) => {
+    if (or.idStatus !== 5) {
+      navigation.navigate("Order", { id: or.id });
+      return;
+    }
+    Alert.alert(
+      "CONFIRMAR PAGAMENTO",
+      "Deseja confirmar o pagamento do pedido e finalizá-lo?",
+      [
+        {
+          text: "Sim",
+          onPress: () => handleConfirmPayment(or),
+        },
+        {
+          text: "Não",
+        },
+      ]
+    );
+  };
 
   return (
     <S.Container>
@@ -64,10 +106,7 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
             <Button value="Ver filtros" onPress={() => setShowModal(true)} />
           }
           renderItem={({ item }) => (
-            <OrderCard
-              order={item}
-              onPress={(it) => navigation.navigate("Order", { id: it.id })}
-            />
+            <OrderCard order={item} onPress={onPressCard} />
           )}
           contentContainerStyle={{
             paddingHorizontal: 24,

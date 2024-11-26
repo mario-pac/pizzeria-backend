@@ -20,6 +20,7 @@ type OrderResponse struct {
 	Self         Order                `json:"self"`
 	OrderItems   []*OrderItemResponse `json:"orderItems"`
 	OrderStatus  *Status              `json:"status"`
+	EmployeeName string               `json:"employeeName"`
 	ItemsDeleted []*int64             `json:"itemsDeleted"`
 }
 

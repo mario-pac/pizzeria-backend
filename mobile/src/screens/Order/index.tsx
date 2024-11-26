@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, BackHandler, FlatList } from "react-native";
+import { Alert, BackHandler, FlatList, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import Button from "components/Button";
@@ -18,6 +18,8 @@ import { showToast } from "utils/toast";
 import OrderHeader from "headers/OrderHeader";
 import * as S from "./styles";
 import { AxiosError } from "axios";
+import { useTheme } from "styled-components/native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
   const {
@@ -31,15 +33,14 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
   } = useCart();
   const [loading, setLoading] = useState(false);
   const me = useMe();
+  const theme = useTheme();
 
   const init = useCallback(async () => {
     try {
       setLoading(true);
-      console.warn("get in");
+      cleanCart();
       if (route.params?.id) {
-        console.warn(route.params.id);
         const ord = await Gets.orderById(me.user!.token, route.params.id);
-        console.warn(ord);
         setOrder(ord.self);
         if (ord.orderItems) {
           updateCart(ord.orderItems);
@@ -71,7 +72,7 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
     init();
   }, []);
 
-  const onGoBack = async () => {
+  const onExit = async () => {
     try {
       setLoading(true);
       if (order) {
@@ -80,10 +81,12 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
               self: order,
               orderItems: items,
               itemsDeleted,
+              employeeName: me.user?.name ?? "",
             })
           : await Posts.handleInsertOrder(me.user!.token, {
               self: order,
               orderItems: items,
+              employeeName: me.user?.name ?? "",
             });
         showToast("success", ret.message);
         setOrder(undefined);
@@ -124,12 +127,12 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
     if (item.id) {
       addItemDeleted(item.id);
     }
-    updateCart(items.filter((i) => i.position !== item.position));
+    updateCart(items.filter((i) => i.self.position !== item.position));
   };
 
   const openExitModal = () => {
-    Alert.alert("CANCELAR", "Deseja sair e salvar a edição do pedido?", [
-      { text: "Sim", onPress: onGoBack },
+    Alert.alert("CANCELAR", "Deseja sair sem salvar a edição do pedido?", [
+      { text: "Sim", onPress: navigation.goBack },
       { text: "Não" },
     ]);
   };
@@ -147,34 +150,54 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
           })
         }
       />
-      <S.Container>
-        <FlatList
-          data={items}
-          renderItem={({ item, index }) => (
-            <ItemListCard
-              item={item}
-              key={index}
-              onPress={(i) =>
-                navigation.navigate("ProductForm", {
-                  id: i.id,
-                  notToList: true,
-                })
-              }
-              onRemove={removeItemModal}
-            />
-          )}
-        />
-        <S.Footer>
-          <Button value="Salvar Pedido" />
-          <Spacer height={16} />
-          <Button
-            value="Finalizar Pedido"
-            onPress={() => navigation.navigate("FinishOrder")}
+      <FlatList
+        data={items}
+        renderItem={({ item }) => (
+          <ItemListCard
+            item={item.self}
+            description={item.description}
+            status={item.status?.description}
+            key={Math.random() + 97854}
+            onPress={(i) =>
+              navigation.navigate("ProductForm", {
+                id: i.id,
+                notToList: true,
+              })
+            }
+            onRemove={removeItemModal}
           />
-          <Spacer height={16} />
-          <Button value="Sair" outline onPress={openExitModal} />
-        </S.Footer>
-      </S.Container>
+        )}
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          padding: 16,
+          gap: 12,
+        }}
+        ListEmptyComponent={
+          <Text
+            style={{
+              color: theme.colors.text.primary,
+              width: "100%",
+              textAlign: "center",
+              fontFamily: theme.fonts.semibold,
+              fontSize: RFValue(14),
+            }}
+          >
+            Nenhum item adicionado...
+          </Text>
+        }
+        ListFooterComponent={
+          <S.Footer>
+            <Button value="Salvar Pedido" onPress={onExit} />
+            <Spacer height={16} />
+            <Button
+              value="Finalizar Pedido"
+              onPress={() => navigation.navigate("FinishOrder")}
+            />
+            <Spacer height={16} />
+            <Button value="Sair" outline onPress={openExitModal} />
+          </S.Footer>
+        }
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { LegacyRef } from "react";
 import { TextInput, TextInputProps } from "react-native";
 import { useTheme } from "styled-components/native";
 
@@ -67,7 +67,7 @@ const CountInput = React.forwardRef(function RenderInput(
             size={size}
             onPress={onRemove}
             color={
-              disableMinus ? theme.colors.disabled : theme.colors.text.primary
+              disableMinus ? theme.colors.disabled : theme.colors.input.text
             }
             disabled={disableMinus}
           />
@@ -79,7 +79,7 @@ const CountInput = React.forwardRef(function RenderInput(
             type="antdesign"
             size={size}
             onPress={onAdd}
-            color={theme.colors.text.primary}
+            color={theme.colors.input.text}
           />
         </S.IconWrapper>
       </S.TextInputWrapper>

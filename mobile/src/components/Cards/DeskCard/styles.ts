@@ -2,7 +2,7 @@ import { RectButton } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 
-export const Container = styled(RectButton)<{ active?: boolean }>`
+export const Container = styled.Pressable<{ active?: boolean }>`
   width: 60px;
   height: 60px;
   border-radius: 8px;

@@ -1,11 +1,5 @@
-import {
-  MutableRefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { LayoutChangeEvent, TextInput } from "react-native";
+import { MutableRefObject } from "react";
+import { TextInput } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigationProps, RootStackParamList } from "../routes/stack";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -34,9 +28,12 @@ export function formatNumber(num: number, casas = 2) {
 }
 
 export const getBackendUrl = async () => {
-  const setting = await getSetting()
+  const setting = await getSetting();
+  if (!setting?.server) {
+    return undefined;
+  }
   return `http://${setting?.server}`;
-}
+};
 
 /**
  * Avança para o próximo input
@@ -61,13 +58,13 @@ export function isNumberValid(value: string) {
   }
 }
 
-export const formatPrice = (price: number, style: string = 'currency') => {
+export const formatPrice = (price: number, style: string = "currency") => {
   if (!price && price != 0) {
-    return '';
+    return "";
   }
-  let fmt = new Intl.NumberFormat('pt-br', {
-    style: style,
-    currency: 'BRL',
+  let fmt = new Intl.NumberFormat("pt-br", {
+    style: style as unknown as undefined,
+    currency: "BRL",
   });
   return fmt.format(price);
 };

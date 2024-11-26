@@ -13,6 +13,7 @@ import { useMe } from "providers/user";
 import { showToast } from "utils/toast";
 import { ScreenBaseProps } from "utils/index";
 
+import { log } from "../../log";
 import * as S from "./styles";
 
 const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
@@ -44,6 +45,7 @@ const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
         }
       }
     } catch (error) {
+      log.debug(error);
       showToast(
         "error",
         "Erro ao consultar número de mesas: " +
@@ -88,11 +90,15 @@ const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
 
   return (
     <S.Container>
-      <ModalConfirmCustomerName
-        showModal={showModal}
-        closeModal={() => setShowModal(false)}
-        onClose={createNewOrder}
-      />
+      {showModal && (
+        <ModalConfirmCustomerName
+          showModal={showModal}
+          closeModal={() => {
+            setShowModal(false);
+          }}
+          onClose={createNewOrder}
+        />
+      )}
       {desks.map((item) => (
         <DeskCard
           number={item}

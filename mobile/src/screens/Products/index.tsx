@@ -14,6 +14,7 @@ import { useConfigs } from "providers/config";
 import ProductsHeader from "headers/ProductsHeader";
 import * as S from "./styles";
 import Button from "components/Button";
+import { log } from "../../log";
 
 const Products: React.FC<ScreenBaseProps<"Products">> = ({
   navigation,
@@ -39,7 +40,7 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({
         setProducts(response);
       }
     } catch (error) {
-      console.log(error);
+      log.debug(error);
     } finally {
       setLoading(false);
     }
@@ -77,7 +78,15 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({
               <ProductCard
                 product={item}
                 onPress={() =>
-                  navigation.navigate("ProductForm", { id: item.id, notToList })
+                  notToList
+                    ? navigation.replace("ProductForm", {
+                        id: item.id,
+                        notToList,
+                      })
+                    : navigation.navigate("ProductForm", {
+                        id: item.id,
+                        notToList,
+                      })
                 }
               />
             )}

@@ -24,6 +24,7 @@ const EmployeeCard: React.FC<Props> = ({ employee, onPress }) => {
           style={{
             width: "25%",
             padding: 18,
+            height: 90,
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: theme.colors.primary,

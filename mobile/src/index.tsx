@@ -1,3 +1,5 @@
+import "react-native-url-polyfill/auto";
+
 import React from "react";
 
 import { StatusBar } from "expo-status-bar";
@@ -16,16 +18,17 @@ import {
 import "intl";
 import "intl/locale-data/jsonp/pt-BR";
 
-import { theme } from "./styles/theme";
+import { theme } from "styles/theme";
 
-import { StackRoutes } from "./routes/stack.routes";
+import { StackRoutes } from "routes/stack.routes";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import LoadingPanel from "./components/LoadingPanel";
-import ErrorPage from "./components/ErrorPage";
+import LoadingPanel from "components/LoadingPanel";
+import ErrorPage from "components/ErrorPage";
 import { CartProvider } from "providers/cart";
 import { UserProvider } from "providers/user";
 import { ConfigProvider } from "providers/config";
+import { log } from "./log";
 
 export default function App() {
   const [fontsLoaded, err] = useFonts({
@@ -37,12 +40,14 @@ export default function App() {
   });
 
   if (err) {
+    log.error(err);
     return (
       <ThemeProvider theme={theme}>
         <ErrorPage message={err.message} />
       </ThemeProvider>
     );
   }
+
   if (!fontsLoaded) {
     return (
       <ThemeProvider theme={theme}>

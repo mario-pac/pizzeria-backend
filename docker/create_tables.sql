@@ -44,6 +44,12 @@ CREATE TABLE
     );
 
 CREATE TABLE
+     status (
+        id SMALLINT PRIMARY KEY NOT NULL,
+        description VARCHAR(24) NOT NULL
+     );
+
+CREATE TABLE
     orders (
         id SERIAL PRIMARY KEY NOT NULL UNIQUE,
         id_company SMALLINT REFERENCES companies (id) NOT NULL,
@@ -52,7 +58,7 @@ CREATE TABLE
         customer_name VARCHAR(255) NOT NULL,
         total_value DECIMAL(10, 2) NOT NULL,
         payment_method VARCHAR(50) NOT NULL,
-        id_status VARCHAR(50) NOT NULL,
+        id_status SMALLINT DEFAULT 1 REFERENCES status(id),
         note TEXT NULL,
         created_at TIMESTAMP
         WITH
@@ -61,13 +67,6 @@ CREATE TABLE
         WITH
             TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
-
-CREATE TABLE
-     status (
-        id SMALLINT PRIMARY KEY NOT NULL,
-        description VARCHAR(24) NOT NULL
-     );
-
 
 CREATE TABLE
     order_items (
@@ -108,7 +107,7 @@ INSERT INTO products (id, description, price, category, id_company) VALUES
 (3, 'Pizza de 4 Queijos', 50.89, 'Pizza G', 1),
 (4, 'Coca Cola 2L', 12.39, 'Bebidas', 1),
 (5, 'Cerveja Heineken 600ml', 6.90, 'Bebidas', 1),
-(6, 'Vinho Tinto Seco Casillera del Diablo', 34.59, 'Pizza', 1);
+(6, 'Vinho Tinto Seco Casillera del Diablo', 34.59, 'Bebidas', 1);
 
 INSERT INTO status (id, description) VALUES 
 (1, 'Pedido anotado'),

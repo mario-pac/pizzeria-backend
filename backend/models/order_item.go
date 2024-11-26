@@ -16,4 +16,5 @@ type OrderItem struct {
 type OrderItemResponse struct {
 	Self            OrderItem `json:"self"`
 	OrderItemStatus *Status   `json:"status" `
+	Description     string    `json:"description"`
 }

@@ -1,15 +1,16 @@
-import { RectButton } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 
-export const Container = styled(RectButton)`
+export const Container = styled.View`
   width: 100%;
+  height: 160px;
 
   flex-direction: row;
   align-items: center;
   justify-content: center;
   border-radius: 16px;
   overflow: hidden;
+  background-color: ${({ theme }) => theme.colors.card};
 `;
 
 export const Content = styled.View`
@@ -17,7 +18,6 @@ export const Content = styled.View`
   height: 100%;
   padding: 8px;
   justify-content: space-around;
-  background-color: ${({ theme }) => theme.colors.card};
 `;
 
 export const Title = styled.Text`

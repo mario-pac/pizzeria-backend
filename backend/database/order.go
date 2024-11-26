@@ -10,7 +10,7 @@ import (
 	"go/pizzeria-backend/models"
 )
 
-func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.Order, error) {
+func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.OrderResponse, error) {
 	q := "select * from orders"
 	var hasW = false
 
@@ -34,6 +34,8 @@ func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.Order, err
 
 	if filters.IdStatus != nil {
 		addW("id_status = " + strconv.FormatInt(*filters.IdStatus, 10))
+	} else {
+		addW("id_status <> 6")
 	}
 
 	if filters.CreatedAtInit != nil {
@@ -46,33 +48,57 @@ func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.Order, err
 
 	addW("id_company = " + strconv.FormatInt(int64(filters.IdCompany), 10))
 
-	var employees []*models.Order
+	q += "\norder by id desc"
 
-	err := d.db.Select(&employees, q)
+	var orders []*models.Order
+
+	err := d.db.Select(&orders, q)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
 
-	return employees, nil
+	var ordersResponse []*models.OrderResponse
+
+	for _, or := range orders {
+		resp := &models.OrderResponse{}
+
+		emp, err := d.EmployeeById(or.EmployeeId)
+		if err != nil {
+			return nil, err
+		}
+
+		resp.EmployeeName = emp.Self.CompleteName
+		resp.OrderItems, err = d.OrderItemsByIdOrder(or.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		resp.OrderStatus, err = d.StatusById(or.IdStatus)
+		if err != nil {
+			return nil, err
+		}
+
+		resp.Self = *or
+		ordersResponse = append(ordersResponse, resp)
+	}
+
+	return ordersResponse, nil
 }
 
 func (d *DAO) InsertOrder(data models.Order) (int64, error) {
-	q := "insert into orders (employee_id, table_number, customer_name, total_value, payment_method, id_status, note, created_at, id_company) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
-	resp, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.IdCompany)
-	if err != nil {
-		return 0, err
+	q := "insert into orders (employee_id, table_number, customer_name, total_value, payment_method, id_status, note, created_at, id_company) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id"
+
+	r := d.db.QueryRow(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.IdCompany).Scan(&data.Id)
+
+	if r.Error() != "" && r.Error() != "sql: no rows in result set" {
+		return 0, fmt.Errorf("erro ao inserir order: %v", r.Error())
 	}
 
-	id, err := resp.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
+	return data.Id, nil
 }
 
 func (d *DAO) UpdateOrder(data models.Order) error {
-	q := "update employees set employee_id = $1, table_number = $2, customer_name = $3, total_value = $4, payment_method = $5, id_status = $6, note = $7, updated_at = $8 where id = $9"
+	q := "update orders set employee_id = $1, table_number = $2, customer_name = $3, total_value = $4, payment_method = $5, id_status = $6, note = $7, updated_at = $8 where id = $9"
 	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.Id)
 	if err != nil {
 		return err
@@ -94,7 +120,6 @@ func (d *DAO) DeleteOrder(id int64) error {
 func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 	var order models.Order
 	var orderItems []*models.OrderItemResponse
-	var status *models.Status
 
 	var response models.OrderResponse
 
@@ -113,7 +138,12 @@ func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 		return nil, err
 	}
 
-	status, err = d.StatusById(order.IdStatus)
+	status, err := d.StatusById(order.IdStatus)
+	if err != nil {
+		return nil, err
+	}
+
+	employee, err := d.EmployeeById(order.EmployeeId)
 	if err != nil {
 		return nil, err
 	}
@@ -121,6 +151,7 @@ func (d *DAO) OrderById(id int64) (*models.OrderResponse, error) {
 	response.OrderStatus = status
 	response.OrderItems = orderItems
 	response.Self = order
+	response.EmployeeName = employee.Self.CompleteName
 
 	return &response, nil
 }

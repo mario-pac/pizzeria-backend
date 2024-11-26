@@ -49,6 +49,7 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
       );
       if (its) setItemList(its);
     } catch (error) {
+      console.log(error);
       showToast("error", "Erro ao buscar itens: " + (error as Error).message);
     } finally {
       setLoading(false);
@@ -57,7 +58,7 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
 
   useEffect(() => {
     getItems();
-  }, [getItems]);
+  }, []);
 
   const finalizeItem = (item: Models.OrderItem) => {
     if (item.idStatus === 1) {
@@ -97,7 +98,12 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
       <FlatList
         data={itemList}
         renderItem={({ item, index }) => (
-          <ItemListCard item={item.self} key={index} onPress={finalizeItem} />
+          <ItemListCard
+            item={item.self}
+            description={item.description}
+            key={index}
+            onPress={finalizeItem}
+          />
         )}
       />
     </S.Container>

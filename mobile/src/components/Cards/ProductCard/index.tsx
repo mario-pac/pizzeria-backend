@@ -22,6 +22,7 @@ const ProductCard: React.FC<Props> = ({ product, onPress }) => {
         <View
           style={{
             width: "25%",
+            height: 90,
             paddingVertical: 18,
             alignItems: "center",
             justifyContent: "center",

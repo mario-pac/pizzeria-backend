@@ -4,6 +4,8 @@ import { Modal, View } from "react-native";
 import Button from "components/Button";
 import { useTheme } from "styled-components/native";
 import Input from "components/Input";
+import { log } from "../../../log";
+import Title from "../Title";
 
 interface Props {
   showModal: boolean;
@@ -18,6 +20,7 @@ const ModalConfirmCustomerName: React.FC<Props> = ({
 }) => {
   const theme = useTheme();
   const [value, setValue] = useState("");
+
   return (
     <View>
       <Modal transparent={true} visible={showModal}>
@@ -42,20 +45,22 @@ const ModalConfirmCustomerName: React.FC<Props> = ({
               gap: 10,
             }}
           >
-            <Input
-              label="Insira o nome do cliente:"
-              value={value}
-              onChangeText={setValue}
-            />
+            <Title title="Informe o nome do cliente:" closeModal={closeModal} />
+            <Input value={value} onChangeText={setValue} />
             <Button
               value="Confirmar"
               onPress={() => {
-                console.warn(onClose);
                 onClose && onClose(value);
                 closeModal();
               }}
+              width="100%"
             />
-            <Button outline value="Cancelar" onPress={closeModal} />
+            <Button
+              outline
+              value="Cancelar"
+              onPress={closeModal}
+              width="100%"
+            />
           </View>
         </View>
       </Modal>

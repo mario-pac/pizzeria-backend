@@ -30,14 +30,16 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const onLogin = async () => {
     setLoading(true);
     try {
-      const resp = await Posts.handleLogin(login, password)
-      await addUser(resp.user)
-      const company = await Gets.companyById(resp.user.token, resp.user.idCompany);
+      const resp = await Posts.handleLogin(login, password);
+      await addUser(resp.user);
+      const company = await Gets.companyById(
+        resp.user.token,
+        resp.user.idCompany
+      );
       await addCompany(company);
-      showToast('success', resp.message);
-      navigation.navigate("Home");
+      showToast("success", resp.message);
+      navigation.replace("Home");
     } catch (error) {
-      console.log(error);
       showToast("error", error as string);
     } finally {
       setLoading(false);
@@ -97,10 +99,10 @@ const Login: React.FC<Props> = ({ navigation }) => {
           icon={{
             name: "setting",
             size: 24,
-            type: 'antdesign',
-            right: false
-          }}      
-          onPress={() => navigation.navigate('HomeSetting')}
+            type: "antdesign",
+            right: false,
+          }}
+          onPress={() => navigation.navigate("HomeSetting")}
         />
         <Version />
       </S.Content>

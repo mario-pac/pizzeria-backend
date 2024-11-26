@@ -12,7 +12,7 @@ interface SelectInputProps<T> {
   label?: string;
   labelSecondary?: boolean;
   width?: number;
-  onValueChange: (value: T) => void;
+  onValueChange: (value: any) => void;
   placeholder?: string;
   items: T[];
   keyOfLabel: keyof T;

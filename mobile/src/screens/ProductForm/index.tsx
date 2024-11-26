@@ -11,7 +11,7 @@ import LoadingPanel from "components/LoadingPanel";
 
 import { Gets, Models, Posts, Puts } from "api/index";
 
-import { ScreenBaseProps } from "utils/index";
+import { formatPrice, ScreenBaseProps } from "utils/index";
 import { showToast } from "utils/toast";
 
 import { useCart } from "providers/cart";
@@ -19,6 +19,7 @@ import { useMe } from "providers/user";
 
 import ProductHeader from "headers/ProductHeader";
 import * as S from "./styles";
+import { log } from "../../log";
 
 const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
   navigation,
@@ -40,7 +41,7 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
       const id = route.params?.id;
       if (id && me.user?.token) {
         const prod = await Gets.productById(me.user.token, id);
-        console.log(prod);
+        log.debug(prod);
         if (prod) {
           setFormValues(prod);
         }
@@ -74,19 +75,31 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
     Alert.alert(
       "Adicionar ao carrinho",
       `Deseja adicionar o produto #${item.id} ao carrinho?`,
-      [{ text: "Sim", onPress: () => handleAdd(item) }, { text: "Não" }]
+      [
+        {
+          text: "Sim",
+          onPress: () => {
+            handleAdd(item);
+            navigation.goBack();
+          },
+        },
+        { text: "Não" },
+      ]
     );
   };
 
   const handleAdd = (item: Models.Product) => {
-    const orderItem: Models.OrderItem = {
-      ...item,
+    const self: Models.OrderItem = {
+      productId: item.id,
       idStatus: 0,
       quantity: Number(quantity),
       position,
       id: 0,
     };
-    addToCart(orderItem);
+    addToCart({
+      self,
+      description: item.description,
+    });
   };
 
   const onPress = () => {
@@ -129,7 +142,12 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
       <ProductHeader onGoBack={navigation.goBack} id={route.params?.id} />
       <S.Container>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <Input label="Nome do Produto" disabled={notToList} />
+          <Input
+            label="Nome do Produto"
+            disabled={notToList}
+            value={product.description}
+            onChangeText={(s) => form.setValue("description", s)}
+          />
           <Spacer height={12} />
           <Input
             value={category}
@@ -138,9 +156,12 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
             onChangeText={(s) => form.setValue("category", s)}
           />
           <Spacer height={12} />
-          <Input label="Descrição" disabled={notToList} />
-          <Spacer height={12} />
-          <Input label="Preço" disabled={notToList} />
+          <Input
+            label="Preço"
+            disabled={notToList}
+            value={product.price?.toFixed(2)}
+            onChangeText={(s) => formatPrice(Number(s))}
+          />
           {notToList && (
             <>
               <Spacer height={12} />
@@ -154,7 +175,6 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
               <Input label="Observações" observation />
             </>
           )}
-          <Spacer height={36} />
           <S.Footer>
             {notToList ? (
               <Button value="Adicionar" onPress={() => onAdd(product)} />

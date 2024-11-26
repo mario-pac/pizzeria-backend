@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
 import Icon from "components/Icon";
+import Button from "components/Button";
 import Loading from "components/Loading";
 import EmployeeCard from "components/Cards/EmployeeCard";
 import ModalFiltersEmployees from "components/Modal/ModalFiltersEmployees";
@@ -17,7 +18,6 @@ import { Gets, Models } from "api/index";
 
 import { useTheme } from "styled-components/native";
 import * as S from "./styles";
-import Button from "components/Button";
 
 const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
   const theme = useTheme();

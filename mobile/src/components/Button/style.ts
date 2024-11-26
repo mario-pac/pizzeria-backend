@@ -9,7 +9,7 @@ interface Props {
   color?: string;
 }
 
-export const Container = styled(RectButton).attrs({
+export const Container = styled.Pressable.attrs({
   elevation: 3,
   shadowOffset: { width: -2, height: 4 },
   shadowOpacity: 0.2,
@@ -22,10 +22,10 @@ export const Container = styled(RectButton).attrs({
   justify-content: center;
 
   border-radius: 4px;
-  background: ${({ theme, outline, enabled, color }) =>
+  background: ${({ theme, outline, disabled, color }) =>
     outline
       ? "transparent"
-      : color ?? enabled
+      : color ?? !disabled
       ? theme.colors.button.primary
       : theme.colors.disabled};
 `;
