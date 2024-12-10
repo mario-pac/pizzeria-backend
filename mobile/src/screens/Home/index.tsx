@@ -71,7 +71,7 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
         />
       </View>
       <S.Container>
-        {!!user && user.levelId === 1 ? (
+        {!!user && user.levelId === 2 ? (
           <>
             {
               //Garçom
@@ -101,7 +101,7 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               onPress={() => navigation.navigate("Desks", { newDesk: true })}
             />
           </>
-        ) : !!user && user.levelId === 2 ? (
+        ) : !!user && user.levelId === 1 ? (
           <>
             {
               //Chef

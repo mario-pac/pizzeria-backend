@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"go/pizzeria-backend/models"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -19,10 +20,12 @@ func (s *Service) HandleListProducts(w http.ResponseWriter, r *http.Request) {
 	filters := &models.ProductListFilters{}
 
 	val := r.Header.Get("description")
+	log.Printf("descricao: %s", val)
 	if val != "" {
 		filters.Description = &val
 	}
 	val = r.Header.Get("category")
+	log.Printf("categoria: %s", val)
 	if val != "" {
 		filters.Category = &val
 	}
@@ -33,7 +36,7 @@ func (s *Service) HandleListProducts(w http.ResponseWriter, r *http.Request) {
 	}
 	filters.IdCompany = idCompany
 
-	products, err := s.db.ListProducts(*filters)
+	products, err := s.db.ListProducts(filters)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"go/pizzeria-backend/models"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func (d *DAO) OrderItemsByIdOrder(id int64) ([]*models.OrderItemResponse, error) {
@@ -47,9 +49,9 @@ func (d *DAO) OrderItemsByIdOrder(id int64) ([]*models.OrderItemResponse, error)
 	return response, nil
 }
 
-func (d *DAO) InsertOrderItem(data models.OrderItem) error {
+func (d *DAO) InsertOrderItem(tx *sqlx.Tx, data models.OrderItem) error {
 	q := "insert into order_items (order_id, product_id, quantity, position, id_order_status, created_at) values ($1, $2, $3, $4, $5, $6)"
-	_, err := d.db.Exec(q, data.OrderID, data.ProductID, data.Quantity, data.Position, 1, time.Now())
+	_, err := tx.Exec(q, data.OrderID, data.ProductID, data.Quantity, data.Position, 1, time.Now())
 	if err != nil {
 		return err
 	}
@@ -57,9 +59,9 @@ func (d *DAO) InsertOrderItem(data models.OrderItem) error {
 	return nil
 }
 
-func (d *DAO) UpdateOrderItem(data models.OrderItem) error {
+func (d *DAO) UpdateOrderItem(tx *sqlx.Tx, data models.OrderItem) error {
 	q := "update order_items set quantity = $1, id_order_status = $2, updated_at = $3 where id = $4"
-	_, err := d.db.Exec(q, data.Quantity, data.IdOrderStatus, time.Now(), data.Id)
+	_, err := tx.Exec(q, data.Quantity, data.IdOrderStatus, time.Now(), data.Id)
 	if err != nil {
 		return err
 	}
@@ -67,9 +69,9 @@ func (d *DAO) UpdateOrderItem(data models.OrderItem) error {
 	return nil
 }
 
-func (d *DAO) DeleteOrderItem(id int64) error {
+func (d *DAO) DeleteOrderItem(tx *sqlx.Tx, id int64) error {
 	q := "delete from orders where id = $1"
-	_, err := d.db.Exec(q, id)
+	_, err := tx.Exec(q, id)
 	if err != nil {
 		return err
 	}
@@ -119,13 +121,13 @@ func (d *DAO) GetNextSequenceIdOrderItem() (int64, error) {
 func (d *DAO) OrderItemsByIdsStatus(idsStatus []string) ([]*models.OrderItemResponse, error) {
 	joinedValues := strings.Join(idsStatus, ",")
 
-	q := "select * from order_items where cast(id_order_status as varchar) in ($1)"
+	q := "select * from order_items where id_order_status in (" + joinedValues + ")"
 
 	var orderItems []*models.OrderItem
 
 	var response []*models.OrderItemResponse
 
-	err := d.db.Select(&orderItems, q, joinedValues)
+	err := d.db.Select(&orderItems, q)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}

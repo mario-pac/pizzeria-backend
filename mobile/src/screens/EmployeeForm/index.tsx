@@ -37,7 +37,7 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
       setLoading(true);
       const res = await Gets.employeeById(me.user!.token, id);
       if (res) {
-        setFormValues(res);
+        form.reset(res);
       }
     } catch (error) {
       console.error(error);
@@ -49,7 +49,9 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
   useEffect(() => {
     if (route.params?.id) {
       getEmployeeById(route.params.id);
+      return;
     }
+    form.setValue("self.idCompany", me.user?.idCompany ?? 0);
   }, [route.params]);
 
   const setFormValues = (value: Models.EmployeeResponse) => {
@@ -106,10 +108,10 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
     setLoading(true);
     try {
       if (route.params?.id) {
-        const msg = await Puts.handleUpdateEmployee(
-          me.user!.token,
-          employee.self
-        );
+        const msg = await Puts.handleUpdateEmployee(me.user!.token, {
+          ...employee.self,
+          password: novaSenha ?? employee.self.password,
+        });
         showToast("success", msg.message);
       } else {
         const msg = await Posts.handleInsertEmployee(
@@ -120,7 +122,8 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
       }
       navigation.replace("Employees");
     } catch (error) {
-      const msg = (error as Error).message;
+      console.log(error);
+      const msg = error as string;
       showToast("error", msg);
     } finally {
       setLoading(false);
@@ -153,7 +156,7 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
           onChangeText={(s) => form.setValue("self.username", s)}
         />
         <Spacer height={12} />
-        {route.params?.id ? (
+        {!route.params?.id ? (
           <InputPassword
             label="Senha"
             value={senha}
@@ -182,7 +185,7 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
             keyOfValue="id"
             onValueChange={(v) => {
               if (v) {
-                form.setValue("self.levelId", v.id);
+                form.setValue("self.levelId", v);
                 form.setValue("employeeLevel", v);
               }
             }}

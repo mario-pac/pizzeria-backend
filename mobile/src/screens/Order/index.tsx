@@ -94,8 +94,8 @@ const Order: React.FC<ScreenBaseProps<"Order">> = ({ navigation, route }) => {
         navigation.goBack();
       }
     } catch (error) {
-      console.error(error);
-      showToast("error", (error as Error).message);
+      console.log(error);
+      showToast("error", error as string);
     } finally {
       setLoading(false);
     }

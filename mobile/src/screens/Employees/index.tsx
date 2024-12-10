@@ -18,6 +18,8 @@ import { Gets, Models } from "api/index";
 
 import { useTheme } from "styled-components/native";
 import * as S from "./styles";
+import EmployeeHeader from "headers/EmployeeHeader";
+import EmployeesHeader from "headers/EmployeesHeader";
 
 const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
   const theme = useTheme();
@@ -79,21 +81,27 @@ const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Icon
-          type="antdesign"
-          name="plus"
-          size={30}
-          onPress={() => navigation.navigate("EmployeeForm")}
-          right={false}
-          color={theme.colors.text.primary}
-        />
-      ),
+      headerRight: () => {
+        return (
+          <Icon
+            type="antdesign"
+            name="plus"
+            size={30}
+            onPress={() => navigation.navigate("EmployeeForm")}
+            right={false}
+            color={theme.colors.text.primary}
+          />
+        );
+      },
     });
   }, [navigation]);
 
   return (
     <S.Container>
+      <EmployeesHeader
+        onGoBack={navigation.goBack}
+        onAdd={() => navigation.navigate("EmployeeForm")}
+      />
       <ModalFiltersEmployees
         filter={filter}
         setFilter={setFilter}

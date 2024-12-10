@@ -102,6 +102,7 @@ const ModalFiltersOrders: React.FC<Props> = ({
                   if (v) {
                     setFilter({ ...filter, idStatus: v });
                   }
+                  setFilter({ ...filter, idStatus: undefined });
                 }}
                 placeholder="Selecione uma opção..."
               />

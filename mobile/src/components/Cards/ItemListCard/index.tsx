@@ -51,6 +51,9 @@ const ItemListCard: React.FC<Props> = ({
           onPress={() => onPress(item)}
         >
           <S.Title numberOfLines={1} ellipsizeMode="tail">
+            Pedido # {item.orderId}
+          </S.Title>
+          <S.Title numberOfLines={1} ellipsizeMode="tail">
             Item No. {item.position.toString().padStart(3, "0")}
           </S.Title>
           <S.Title numberOfLines={1} ellipsizeMode="tail">

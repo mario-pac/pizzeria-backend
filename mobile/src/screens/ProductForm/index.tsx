@@ -32,6 +32,8 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
 
   const position = items.length + 1;
 
+  const [price, setPrice] = useState("");
+
   const [quantity, setQuantity] = useState("0");
   const [loading, setLoading] = useState(false);
 
@@ -45,7 +47,9 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
         if (prod) {
           setFormValues(prod);
         }
+        return;
       }
+      form.setValue("idCompany", me.user?.idCompany ?? 0);
     } catch (error) {
       showToast("error", "Erro ao buscar produto: " + (error as Error).message);
     } finally {
@@ -61,6 +65,7 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
         prod[key as keyof Models.Product]
       );
     }
+    setPrice(prod.price.toFixed(2).replace(".", ","));
   };
 
   useFocusEffect(
@@ -117,15 +122,23 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
     setLoading(true);
     try {
       if (route.params?.id) {
-        const msg = await Puts.handleUpdateProduct(me.user!.token, product);
+        const msg = await Puts.handleUpdateProduct(me.user!.token, {
+          ...product,
+          price: Number(price.replace(",", ".")),
+        });
         showToast("success", msg.message);
       } else {
-        const msg = await Posts.handleInsertProduct(me.user!.token, product);
+        const msg = await Posts.handleInsertProduct(me.user!.token, {
+          ...product,
+          price: Number(price.replace(",", ".")),
+          id: 0,
+        });
         showToast("success", msg.message);
       }
       navigation.replace("Products");
     } catch (error) {
-      const msg = (error as Error).message;
+      console.log(error);
+      const msg = error as string;
       showToast("error", msg);
     } finally {
       setLoading(false);
@@ -159,8 +172,8 @@ const ProductForm: React.FC<ScreenBaseProps<"ProductForm">> = ({
           <Input
             label="Preço"
             disabled={notToList}
-            value={product.price?.toFixed(2)}
-            onChangeText={(s) => formatPrice(Number(s))}
+            value={price}
+            onChangeText={setPrice}
           />
           {notToList && (
             <>

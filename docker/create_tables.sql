@@ -98,8 +98,8 @@ INSERT INTO companies (id, company_name, cnpj) VALUES
 
 INSERT INTO employees_levels (id, description, id_company) VALUES
 (1, 'Chef', 1),
-(2, 'Waiter', 1),
-(3, 'Manager', 1);
+(2, 'Garçom', 1),
+(3, 'Administrador', 1);
 
 INSERT INTO products (id, description, price, category, id_company) VALUES 
 (1, 'Pizza de Margueritta', 42.99, 'Pizza G', 1),
@@ -115,7 +115,7 @@ INSERT INTO status (id, description) VALUES
 (3, 'Pronto para retirar'),
 (4, 'Pedido em andamento'),
 (5, 'Aguardando pagamento'),
-(6, 'Finalizado');
+(6, 'Finalizado / Entregue');
 
 INSERT INTO settings (id, number_of_tables, id_company) VALUES 
 (1, 10, 1);

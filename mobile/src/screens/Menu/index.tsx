@@ -14,7 +14,7 @@ const Menu: React.FC<ScreenBaseProps<"Menu">> = () => {
 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Models.Product[]>([]);
-  const [filter, setFilter] = useState<Models.ProductListFilters>({
+  const [filter, _] = useState<Models.ProductListFilters>({
     idCompany: me.user?.idCompany ?? 0,
   });
 
@@ -41,7 +41,11 @@ const Menu: React.FC<ScreenBaseProps<"Menu">> = () => {
       <FlatList
         data={products}
         renderItem={(item) => <ProductCard product={item.item} />}
-        style={{ paddingHorizontal: 24, paddingVertical: 16 }}
+        contentContainerStyle={{
+          gap: 16,
+          paddingHorizontal: 24,
+          paddingVertical: 16,
+        }}
       />
     </S.Container>
   );

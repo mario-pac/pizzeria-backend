@@ -22,12 +22,13 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
 
   const handleFinalize = async (item: Models.OrderItem, idStatus: number) => {
     try {
-      item.idStatus = idStatus;
+      item.idOrderStatus = idStatus;
       const { message } = await Puts.handleUpdateOrderItem(
         me.user!.token,
         item
       );
       showToast("success", message);
+      await getItems();
     } catch (error) {
       const msg = (error as Error).message;
       showToast("error", msg);
@@ -48,6 +49,7 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
           : []
       );
       if (its) setItemList(its);
+      else setItemList([]);
     } catch (error) {
       console.log(error);
       showToast("error", "Erro ao buscar itens: " + (error as Error).message);
@@ -61,7 +63,7 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
   }, []);
 
   const finalizeItem = (item: Models.OrderItem) => {
-    if (item.idStatus === 1) {
+    if (item.idOrderStatus === 1) {
       Alert.alert(
         "Confirmar item em preparo",
         `Deseja realmente confirmar que o item #${item.id} está sendo preparado?`,
@@ -70,7 +72,7 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
           { text: "Não" },
         ]
       );
-    } else if (item.idStatus === 2) {
+    } else if (item.idOrderStatus === 2) {
       Alert.alert(
         "Confirmar item feito",
         `Deseja realmente confirmar que o item #${item.id} está pronto para ser servido?`,
@@ -100,11 +102,17 @@ const ItemList: React.FC<ScreenBaseProps<"ItemList">> = () => {
         renderItem={({ item, index }) => (
           <ItemListCard
             item={item.self}
+            status={item.status?.description}
             description={item.description}
             key={index}
             onPress={finalizeItem}
           />
         )}
+        contentContainerStyle={{
+          gap: 16,
+          paddingHorizontal: 24,
+          paddingVertical: 16,
+        }}
       />
     </S.Container>
   );

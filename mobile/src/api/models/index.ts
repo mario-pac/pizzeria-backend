@@ -31,7 +31,7 @@ export interface OrderItem {
   productId?: number;
   quantity: number;
   position: number;
-  idStatus: number;
+  idOrderStatus: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

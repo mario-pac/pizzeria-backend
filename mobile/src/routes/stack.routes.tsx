@@ -92,7 +92,7 @@ export const StackRoutes: React.FC = () => {
       <Stack.Screen
         name="Employees"
         component={Employees}
-        options={{ headerTitle: "Funcionários" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ItemList"

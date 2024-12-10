@@ -44,11 +44,11 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [filter]);
 
   const notToList = route.params?.notToList ?? false;
 

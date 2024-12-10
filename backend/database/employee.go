@@ -63,7 +63,7 @@ func (d *DAO) InsertEmployee(data models.Employee) error {
 }
 
 func (d *DAO) UpdateEmployee(data models.Employee) error {
-	q := "update employees set name = $1, login = $2, password = $3, level_id = $4, updated_at = $5 where id = $6"
+	q := "update employees set name = $1, username = $2, password = $3, level_id = $4, updated_at = $5 where id = $6"
 	_, err := d.db.Exec(q, data.CompleteName, data.Username, data.Password, data.Level_Id, time.Now(), data.Id)
 	if err != nil {
 		return err

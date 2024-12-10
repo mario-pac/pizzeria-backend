@@ -62,7 +62,9 @@ const OrderCard: React.FC<Props> = ({ order, onPress, disabled }) => {
             </S.Subtitle>
             <S.Subtitle bold>
               Valor:{" "}
-              <S.Subtitle>R${order.self.totalValue.toFixed(2)}</S.Subtitle>
+              <S.Subtitle>
+                R${order.self.totalValue.toFixed(2).replace(".", ",")}
+              </S.Subtitle>
             </S.Subtitle>
           </View>
           <S.Subtitle bold>

@@ -46,7 +46,10 @@ const ProductCard: React.FC<Props> = ({ product, onPress }) => {
             Categoria: <S.Subtitle>{product.category}</S.Subtitle>
           </S.Subtitle>
           <S.Subtitle bold>
-            Preço: <S.Subtitle>R${product.price}</S.Subtitle>
+            Preço:{" "}
+            <S.Subtitle>
+              R${product.price.toFixed(2).replace(".", ",")}
+            </S.Subtitle>
           </S.Subtitle>
         </S.Content>
       </S.Container>

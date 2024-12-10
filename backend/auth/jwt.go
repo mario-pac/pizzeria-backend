@@ -67,6 +67,10 @@ func ClearToken(w http.ResponseWriter, r *http.Request) {
 	var login UserToken
 
 	err = json.Unmarshal(body, &login)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	claims := &Claims{
 		Username: login.Username,

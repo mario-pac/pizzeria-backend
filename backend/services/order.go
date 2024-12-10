@@ -73,6 +73,14 @@ func (s *Service) HandleListOrders(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
+	tx, err := s.db.DB().Beginx()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -113,7 +121,7 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 	val := s.GetTotalValueOrder(order.OrderItems)
 	order.Self.TotalValue = val
 
-	id, err := s.db.InsertOrder(order.Self)
+	id, err := s.db.InsertOrder(tx, order.Self)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -122,13 +130,18 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 	for _, item := range order.OrderItems {
 		if item != nil {
 			item.Self.OrderID = id
-			err := s.db.InsertOrderItem(item.Self)
+			err := s.db.InsertOrderItem(tx, item.Self)
 			if err != nil {
 				log.Println(fmt.Errorf("erro ao inserir o item: %v", err))
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	response := map[string]string{"message": "Pedido adicionado com sucesso!"}
@@ -138,6 +151,14 @@ func (s *Service) HandleAddOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
+	tx, err := s.db.DB().Beginx()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -180,7 +201,7 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 		order.Self.TotalValue = val
 	}
 
-	err = s.db.UpdateOrder(order.Self)
+	err = s.db.UpdateOrder(tx, order.Self)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -188,7 +209,7 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 
 	for _, id := range order.ItemsDeleted {
 		if id != nil {
-			s.db.DeleteOrderItem(*id)
+			s.db.DeleteOrderItem(tx, *id)
 		}
 	}
 
@@ -200,7 +221,7 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if hasItem != nil && hasItem.Self.Id > 0 {
-			err := s.db.UpdateOrderItem(item.Self)
+			err := s.db.UpdateOrderItem(tx, item.Self)
 			if err != nil {
 				log.Println(fmt.Errorf("erro ao atualizar o item: %v", err))
 				http.Error(w, err.Error(), http.StatusBadRequest)
@@ -208,12 +229,17 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 			}
 			continue
 		}
-		err = s.db.InsertOrderItem(item.Self)
+		err = s.db.InsertOrderItem(tx, item.Self)
 		if err != nil {
 			log.Println(fmt.Errorf("erro ao inserir o item: %v", err))
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	response := map[string]string{"message": "Pedido atualizado com sucesso!"}
@@ -223,6 +249,14 @@ func (s *Service) HandleUpdateOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) HandleRemoveOrder(w http.ResponseWriter, r *http.Request) {
+	tx, err := s.db.DB().Beginx()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -242,16 +276,21 @@ func (s *Service) HandleRemoveOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, it := range items {
-		err = s.db.DeleteOrderItem(it.Self.Id)
+		err = s.db.DeleteOrderItem(tx, it.Self.Id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 	}
 
-	err = s.db.DeleteOrder(int64(idOrder))
+	err = s.db.DeleteOrder(tx, int64(idOrder))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := tx.Commit(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

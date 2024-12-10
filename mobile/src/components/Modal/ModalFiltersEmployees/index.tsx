@@ -28,7 +28,9 @@ const ModalFiltersEmployees: React.FC<Props> = ({
 }) => {
   const theme = useTheme();
 
-  const form = useForm<Models.EmployeeLevel>();
+  const form = useForm<Models.EmployeeLevel>({
+    defaultValues: employeeLevels?.find((el) => el.id === filter.levelId),
+  });
 
   const employeeLevel = form.watch();
 
@@ -65,16 +67,23 @@ const ModalFiltersEmployees: React.FC<Props> = ({
             <Spacer height={6} />
             <SelectInput
               label="Tipo Usuário"
-              value={employeeLevel?.description}
+              value={
+                employeeLevels?.find(
+                  (el) => el.description === employeeLevel?.description
+                )?.description ?? undefined
+              }
               items={employeeLevels ?? []}
               keyOfLabel="description"
               keyOfValue="id"
               onValueChange={(v) => {
                 if (v) {
-                  form.setValue("id", v.id);
-                  form.setValue("description", v.description);
-                  setFilter({ ...filter, levelId: v.id });
+                  form.setValue("id", v);
+                  form.setValue("description", v);
+                  setFilter({ ...filter, levelId: v });
                 }
+                form.setValue("id", 0);
+                form.setValue("description", "");
+                setFilter({ ...filter, levelId: undefined });
               }}
               placeholder="Selecione uma opção..."
             />

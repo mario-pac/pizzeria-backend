@@ -10,6 +10,14 @@ import (
 )
 
 func (s *Service) HandleAddOrderItem(w http.ResponseWriter, r *http.Request) {
+	tx, err := s.db.DB().Beginx()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -43,9 +51,14 @@ func (s *Service) HandleAddOrderItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.db.InsertOrderItem(orderItem)
+	err = s.db.InsertOrderItem(tx, orderItem)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := tx.Commit(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -56,6 +69,14 @@ func (s *Service) HandleAddOrderItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) HandleUpdateOrderItem(w http.ResponseWriter, r *http.Request) {
+	tx, err := s.db.DB().Beginx()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -93,9 +114,14 @@ func (s *Service) HandleUpdateOrderItem(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = s.db.UpdateOrderItem(orderItem)
+	err = s.db.UpdateOrderItem(tx, orderItem)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := tx.Commit(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -106,6 +132,14 @@ func (s *Service) HandleUpdateOrderItem(w http.ResponseWriter, r *http.Request) 
 }
 
 func (s *Service) HandleRemoveOrderItem(w http.ResponseWriter, r *http.Request) {
+	tx, err := s.db.DB().Beginx()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
 	token := s.HandleConfirmToken(w, r)
 	if !token {
 		http.Error(w, "token inválido!", http.StatusUnauthorized)
@@ -118,9 +152,14 @@ func (s *Service) HandleRemoveOrderItem(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = s.db.DeleteOrderItem(int64(idOrderItem))
+	err = s.db.DeleteOrderItem(tx, int64(idOrderItem))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := tx.Commit(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

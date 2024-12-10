@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"go/pizzeria-backend/models"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.OrderResponse, error) {
@@ -85,21 +87,21 @@ func (d *DAO) ListOrders(filters models.OrdersListFilters) ([]*models.OrderRespo
 	return ordersResponse, nil
 }
 
-func (d *DAO) InsertOrder(data models.Order) (int64, error) {
+func (d *DAO) InsertOrder(tx *sqlx.Tx, data models.Order) (int64, error) {
 	q := "insert into orders (employee_id, table_number, customer_name, total_value, payment_method, id_status, note, created_at, id_company) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id"
 
-	r := d.db.QueryRow(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.IdCompany).Scan(&data.Id)
+	r := tx.QueryRow(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.IdCompany).Scan(&data.Id)
 
-	if r.Error() != "" && r.Error() != "sql: no rows in result set" {
+	if r != nil && !errors.Is(r, sql.ErrNoRows) {
 		return 0, fmt.Errorf("erro ao inserir order: %v", r.Error())
 	}
 
 	return data.Id, nil
 }
 
-func (d *DAO) UpdateOrder(data models.Order) error {
+func (d *DAO) UpdateOrder(tx *sqlx.Tx, data models.Order) error {
 	q := "update orders set employee_id = $1, table_number = $2, customer_name = $3, total_value = $4, payment_method = $5, id_status = $6, note = $7, updated_at = $8 where id = $9"
-	_, err := d.db.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.Id)
+	_, err := tx.Exec(q, data.EmployeeId, data.TableNumber, data.CustomerName, data.TotalValue, data.PaymentMethod, data.IdStatus, data.Note, time.Now(), data.Id)
 	if err != nil {
 		return err
 	}
@@ -107,9 +109,9 @@ func (d *DAO) UpdateOrder(data models.Order) error {
 	return nil
 }
 
-func (d *DAO) DeleteOrder(id int64) error {
+func (d *DAO) DeleteOrder(tx *sqlx.Tx, id int64) error {
 	q := "delete from orders where id = $1"
-	_, err := d.db.Exec(q, id)
+	_, err := tx.Exec(q, id)
 	if err != nil {
 		return err
 	}

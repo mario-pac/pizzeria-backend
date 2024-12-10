@@ -41,9 +41,7 @@ export const handleInsertEmployee = async (
 ) => {
   const backendUrl = await getBackendUrl();
 
-  const body = JSON.stringify({
-    employee,
-  });
+  const body = JSON.stringify(employee);
 
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios
@@ -72,9 +70,7 @@ export const handleInsertProduct = async (
 ) => {
   const backendUrl = await getBackendUrl();
 
-  const body = JSON.stringify({
-    product,
-  });
+  const body = JSON.stringify(product);
 
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios
@@ -102,13 +98,7 @@ export const handleInsertOrder = async (
   order: Models.OrderResponse
 ) => {
   const backendUrl = await getBackendUrl();
-  const body = JSON.stringify({
-    self: order.self,
-    orderItems: order.orderItems,
-    status: order.status,
-    employeeName: order.employeeName,
-    itemsDeleted: [],
-  });
+  const body = JSON.stringify(order);
 
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios
@@ -124,6 +114,7 @@ export const handleInsertOrder = async (
         resolve(response);
       })
       .catch((error) => {
+        console.log(error);
         reject(
           "Erro ao inserir pedido:" + (error as AxiosError).response?.data
         );
@@ -136,9 +127,7 @@ export const handleInsertOrderItem = async (
   orderItem: Models.OrderItem
 ) => {
   const backendUrl = await getBackendUrl();
-  const body = JSON.stringify({
-    orderItem,
-  });
+  const body = JSON.stringify(orderItem);
 
   return await new Promise<{ message: string }>((resolve, reject) => {
     axios

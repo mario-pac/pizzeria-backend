@@ -3,13 +3,14 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"strconv"
 	"time"
 
 	"go/pizzeria-backend/models"
 )
 
-func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product, error) {
+func (d *DAO) ListProducts(filters *models.ProductListFilters) ([]*models.Product, error) {
 	var products []*models.Product
 
 	q := "select * from products"
@@ -26,10 +27,13 @@ func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product
 	}
 
 	if filters.Description != nil && *filters.Description != "" {
+		log.Println(*filters.Description)
 		addW("description like '%" + *filters.Description + "%'")
 	}
 
 	if filters.Category != nil && *filters.Category != "" {
+		log.Println(*filters.Category)
+
 		addW("category like '%" + *filters.Category + "%'")
 	}
 
@@ -44,8 +48,16 @@ func (d *DAO) ListProducts(filters models.ProductListFilters) ([]*models.Product
 }
 
 func (d *DAO) InsertProduct(data models.Product) error {
+	var id int64
+
+	qInit := "SELECT setval('products_id_seq', (SELECT MAX(id) FROM products) + 1);"
+	err := d.db.Get(&id, qInit)
+	if err != nil {
+		return err
+	}
+
 	q := "insert into products (description, price, category, created_at, id_company) values ($1, $2, $3, $4, $5)"
-	_, err := d.db.Exec(q, data.Description, data.Price, data.Category, time.Now(), data.IdCompany)
+	_, err = d.db.Exec(q, data.Description, data.Price, data.Category, time.Now(), data.IdCompany)
 	if err != nil {
 		return err
 	}

@@ -15,6 +15,7 @@ import { ScreenBaseProps } from "utils/index";
 
 import { log } from "../../log";
 import * as S from "./styles";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
   const me = useMe();
@@ -66,9 +67,11 @@ const Desks: React.FC<ScreenBaseProps<"Desks">> = ({ navigation, route }) => {
     setDesks(arr);
   }
 
-  useEffect(() => {
-    getDesks();
-  }, [getDesks]);
+  useFocusEffect(
+    useCallback(() => {
+      getDesks();
+    }, [])
+  );
 
   const onError = () => {
     showToast(
