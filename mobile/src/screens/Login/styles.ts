@@ -24,6 +24,7 @@ export const HeaderText = styled.Text`
 export const Content = styled.ScrollView`
   width: 100%;
   flex: 1;
+  gap: 12px;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
   background-color: ${(p) => p.theme.colors.primary};
@@ -39,7 +40,6 @@ export const GreetingText = styled.Text`
 
 export const LabelText = styled.Text`
   width: 75%;
-  margin-top: 8px;
   font-family: ${(p) => p.theme.fonts.medium};
   font-size: ${RFValue(15)}px;
   line-height: ${RFValue(19)}px;

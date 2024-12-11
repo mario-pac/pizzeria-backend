@@ -27,8 +27,11 @@ export const handleLogin = async (username: string, password: string) => {
           resolve(response);
         })
         .catch((error) => {
+          const response = (error as AxiosError).response;
           reject(
-            "Erro ao efetuar login:" + (error as AxiosError).response?.data
+            "Erro ao efetuar login:" + response !== "undefined"
+              ? response?.data
+              : (error as AxiosError).message
           );
         });
     }

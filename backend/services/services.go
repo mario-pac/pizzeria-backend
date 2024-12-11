@@ -84,5 +84,5 @@ func (s *Service) Listen() {
 	//status
 	router.HandleFunc("/listStatus", s.HandleListStatus).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":8080", router)) //prepara o serviço na porta e rota especificadas
+	log.Fatal(http.ListenAndServe(":8000", router)) //prepara o serviço na porta e rota especificadas
 }

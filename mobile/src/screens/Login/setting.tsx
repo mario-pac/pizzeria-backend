@@ -71,9 +71,9 @@ const HomeSetting: React.FC<ScreenBaseProps<"HomeSetting">> = ({
   return (
     <View style={{ flex: 1, padding: 16 }}>
       <Input
-        label="Servidor + porta"
+        label="Servidor"
         value={form.watch("server")}
-        placeholder="192.168.1.3:8080"
+        placeholder="192.168.1.3"
         onChangeText={(s) => form.setValue("server", s)}
       />
       <Spacer height={20} />

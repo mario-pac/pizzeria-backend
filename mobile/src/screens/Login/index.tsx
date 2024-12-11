@@ -9,7 +9,7 @@ import Spacer from "components/Spacer";
 import Version from "components/Version";
 import InputPassword from "components/InputPassword";
 
-import { focusNextInput, ScreenBaseProps } from "utils/index";
+import { focusNextInput, getBackendUrl, ScreenBaseProps } from "utils/index";
 import { useTheme } from "styled-components/native";
 import { showToast } from "utils/toast";
 import { Gets, Posts } from "api/index";
@@ -40,7 +40,10 @@ const Login: React.FC<Props> = ({ navigation }) => {
       showToast("success", resp.message);
       navigation.replace("Home");
     } catch (error) {
-      showToast("error", error as string);
+      const msg = !(error as string).length
+        ? "Não foi possível encontrar o servidor informado."
+        : (error as string);
+      showToast("error", msg);
     } finally {
       setLoading(false);
     }

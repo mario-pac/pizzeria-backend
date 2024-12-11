@@ -32,7 +32,7 @@ export const getBackendUrl = async () => {
   if (!setting?.server) {
     return undefined;
   }
-  return `http://${setting?.server}`;
+  return `http://${setting?.server}:8000`;
 };
 
 /**

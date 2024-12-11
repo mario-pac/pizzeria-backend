@@ -15,28 +15,38 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jose.pacheco.pizzeriaapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jose.pacheco.pizzeriaapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      ["expo-asset", {
-        "assets": [
-          "./node_modules/@expo-google-fonts/poppins/Poppins_400Regular.ttf",
-          "./node_modules/@expo-google-fonts/poppins/Poppins_500Medium.ttf",
-          "./node_modules/@expo-google-fonts/poppins/Poppins_500Medium_Italic.ttf",
-          "./node_modules/@expo-google-fonts/poppins/Poppins_600SemiBold.ttf",
-          "./node_modules/@expo-google-fonts/poppins/Poppins_700Bold.ttf"
-        ]
-      }],
+      [
+        "expo-asset",
+        {
+          "assets": [
+            "./node_modules/@expo-google-fonts/poppins/Poppins_400Regular.ttf",
+            "./node_modules/@expo-google-fonts/poppins/Poppins_500Medium.ttf",
+            "./node_modules/@expo-google-fonts/poppins/Poppins_500Medium_Italic.ttf",
+            "./node_modules/@expo-google-fonts/poppins/Poppins_600SemiBold.ttf",
+            "./node_modules/@expo-google-fonts/poppins/Poppins_700Bold.ttf"
+          ]
+        }
+      ],
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "294c2b91-9102-4c01-9b7c-fcb60f79a24f"
+      }
+    }
   }
 }
